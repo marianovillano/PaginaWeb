@@ -1,0 +1,47 @@
+#LetraArial{
+	font-family: Arial;
+}
+
+#FondoGral{
+	background: rgba(0,0,255,0.2);
+}
+
+#FondoEsp{
+	 background: linear-gradient(90deg, 		
+     rgba(255, 255, 0, 0.4) 0%, 			
+     rgba(255, 0, 0, 0.4) 33%, 			
+     rgba(255, 255, 0, 0.4) 80%);
+}
+a:hover {
+   color: white;
+}
+
+p{
+	font-family: Arial;
+}
+	
+nav {
+    padding: 8px 10px;
+    min-width: 200px;
+	min-height: 10px;
+	max-height: 50px;
+	background: linear-gradient(90deg, 		/*Los valores pueden ser representados en RGBA donde A es un valor entre 0.0 y 1.0 que indica la saturacion*/
+     rgba(0, 26, 155, 0.3) 0%, 			/*Tambien se representan en hsl(matiz,saturacion,brillo); donde la matiz es un angulo en grados donde el*/
+     rgba(0, 26, 155, 0.6) 25%, 			/*rojo vale 0, verde 120 y azul 240, la saturacion es un porcentaje que indica full color al 100%, y el brillo*/
+     rgba(0, 26, 155, 0.6) 75%, 			/*es un porcentaje que va de negro 0% a blanco 100%*/
+     rgba(0, 26, 155, 0.3) 100%);
+}
+nav a {
+    padding: 20px; 
+    color: #000000;
+    font-size: 20px;
+    font-family: Arial;
+    text-decoration: none;
+}
+ nav ul li {
+    display: inline-block;
+}
+
+article.mitadPag {
+	width: 50%;
+}

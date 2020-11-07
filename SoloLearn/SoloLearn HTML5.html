@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+   <head>Pagina HTML 5</head>
+   <body>
+	<nav>
+		<ul>
+			<li><a href="#">Home</a></li>
+			<li><a href="#">Servicios</a></li>
+			<li><a href="#">About me</a></li>
+		</ul>
+	</nav>
+      <header>
+        <h1> Encabezado mas importante </h1>
+        <h3> Encabezado menos importante </h3>
+      </header>
+	  <article> <!-- Reemplaza al <div> de HTML 4 y anteriores-->
+		<h1>Titulo del articulo</h1> 
+		<p>Contenido del articulo</p>
+		<section>
+			<h1>Encabezado de un seccion</h1>
+			<p>contenido o imagen</p>
+		</section>
+		<aside>
+			<p> Etiqueta aside tiene contenido secundario separado pero relacionado indirectamente con el contenido principal </p>
+		</aside>
+	  </article>
+	  <p>Etiqueta audio para agregar sonido en la pagina web</p>
+	  <audio src="audio.mp3" controls>
+		Elemento de audio no soportado por su navegador
+	  </audio>
+	  <p>Etiqueta source para agregar sonido en la pagina web, se pueden especificar varios formatos, y el buscador usara el primero reconocido,
+		 los atributos autoplay y "autoplay loop" son para reproducir audio automaticamente sin permiso y reproducir indefinidamente</p>
+	  <audio controls autoplay >
+		<source src="audio.mp3" type="audio/mpeg" >
+		<source src="audio.ogg" type="audio/ogg">
+	  </audio>
+	  <p>Etiqueta de video:</p>
+	  <video controls>
+		<source src="video.mp4" type="video/mp4">
+		<source src="video.ogg" type="video/ogg">
+		El video no es soportado por el navegador
+	  </video>
+	  Barra de estado o progreso: <progress min="0" max="100" value="35">
+	  </progress>
+	  <p>Formas SVG</p>
+	  <svg width="2000" height="500">
+		<circle cx="80" cy="80" r="50" fill="green"/>
+		<rect width="300" height="100" x="100" y="300" fill="green" />
+		<line x1="200" y1="100" x2="300" y2="200" style="stroke:#000000; stroke-linecap:round; stroke-width:20"  />
+		<polyline style="stroke-linejoin:miter; stroke:black; stroke-width:12; fill: none;" points="100 100, 250 250, 300 200" />
+		<ellipse cx="600" cy="100" rx="150" ry="70" style="fill:green" />
+		<polygon points="800 100, 900 200, 1000 0" style="fill: green; stroke:black;" />
+	  </svg>
+	  <svg width="1000" height="250">
+		<rect width="150" height="150" fill="orange">
+		<animate attributeName="x" from="0" to="300" dur="3s" fill="freeze" repeatCount="5"/> 
+		</rect>
+	  </svg>
+	  <p>Etiqueta path</p>
+	  <svg width="500" height="200">
+		<path d="M 0 0 L200 200 L200 0 Z" style="stroke:#000;  fill:none;" />
+	  </svg>
+	  <form>
+	  <!--El atributo required le dice a la pagina que el campo debe ser llenado-->
+		<label>Tu nombre:</label>
+		<input id="user" name="username" type="text" placeholder="Tu nombre"/> <br />
+		<label for="email">Direccion de correo: </label> 
+		<!-- atributo autofocus es para poner el cursor en el campo al cargar la pagina-->
+		<input type="text" name="email" placeholder="usuario@dominio.com" autofocus required /> 
+		<input type="submit" value="Enviar"/> <br />
+		<label>Campo de busqueda: </label>
+		<input id="mysearch" name="searchitem" placeholder="Busqueda" type="search" /> <br/>
+		<label>Campo con lista preestablecida: </label>
+		<input id="car" type="text" list="colors" />
+		<datalist id="colors">
+			<option value="Rojo">
+			<option value="Verde">
+			<option value="Amarillo">
+		</datalist> <br />
+		<label>Campo con id URL: </label>
+		<input id="url" name="url" type="url" placeholder="ejemplo.com" /><br />
+		<label>Campo con id tel: </label>
+		<input id="tel" name="tel" type="tel" placeholder="123 456 789" />
+	  </form>
+   </body>
+   <footer> Pie de pagina. Todos los derechos reservados...</footer>
+</html>

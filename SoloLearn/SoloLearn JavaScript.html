@@ -1,0 +1,96 @@
+﻿<html>
+	<head>
+		<title>JavaScript</title>
+		<script type="text/javascript" src="SLjavascript.js"> <!--El tipo ya no es requerido porque es el predeterminado en HTML-->
+		</script>
+	</head>
+	<body>
+		<p id="clock"></p>
+		<div id="demo"></div>
+		<div class="demonm">Primer div no modificado</div>
+		<div class="demonm"></div>
+		<p></p>
+		<div id="chnodos">
+			En este div se modifican todos sus nodos hijos por medio de la propiedad childNodes:
+			<p></p>
+			<p></p>
+			<p></p>
+		</div>
+		<img id="myimg" src="Yao Ming.jpg" alt="" /><br/>
+		<div id="estilo" style="width:200px">div con estilo modificado</div>
+		<div id ="nuevop" style="background-color: #00CC00">div donde se agregan nuevos paragrafos</div>
+		<div id="delete" style="background-color: #450066">div donde se elimina un elemento p (como ya se configuro un TagName, aparecera Este div fue seleccionado por el tipo de...
+			<p id="p1">Oracion 1 a eliminar.</p>
+			<p id="p2">Oracion 2 no eliminada.</p>
+		</div>
+		<div id="addp" style="background-color: #335522">div donde se modifica un paragrafo
+			<p id="p3">Esta es una oracion.</p>
+			<p id="p4">Otra oracion.</p>
+		</div>
+		<div id="container">
+            <div id="box"> </div>
+        </div>
+		<button onclick="muestra();">Boton</button><br/>
+		<button id="fecha">Fecha</button><br/>
+		<input type="text" id="name" onchange="change()"><br/>
+		<button id="addelim">Iniciar</button><br/>
+		<div>
+            <button onclick="previo()"> Previa </button>
+            <img id="slider" src="Aysi.jpg" width="200px" height="100px"/>
+            <button onclick="siguiente()"> Siguiente </button>
+        </div>
+		<div id='txt' onclick='test();'>20</div>
+		<form onsubmit="return validate()" method="post">
+			Numero: <input type="text" name="num1" id="num1" /><br />
+			Repetir numero: <input type="text" name="num2" id="num2" /><br />
+			<input type="submit" value="Submit" />
+		</form>
+		
+		
+		
+		<style> /*Esto puede ir en un archivo CCS*/
+		#container {
+					width: 200px;
+					height: 200px;
+					background: green;
+					position: relative;} 
+		#box {
+				width: 50px;
+				height: 50px;
+				background: red;
+				position: absolute;}	/*la posicion es importante para crear la animacion*/
+		</style>
+		<script>
+		document.write("Hola mundo!" + "<br />") //Puede escribir texto, HTML o ambos, se recomienda solo para pruebas
+		document.write("<h1>Hola mundo!</h1>")
+		document.write("El valor de x es: ", x + "<br />")
+		document.write("El precio es: ", precio + "<br />")
+		document.write("Mi \"nombre es: ", nombre + "<br />")
+		document.write(" Total: ", y + "<br />")
+		document.write(ternario + "<br />")
+		document.write(cadena1+cadena2 + "<br />")
+		var arr = document.getElementsByTagName("p"); //Este caso no necesita timeout porque ya corre dentro del documento html
+		for (var x = 0; x < arr.length; x++) {
+			arr[x].innerHTML = "Este div fue seleccionado por el tipo de etiqueta con el metodo get.ElementsByTagName!";}
+		var a = document.getElementById("chnodos");
+		var arr = a.childNodes;
+		    for(var x=0;x<arr.length;x++) {
+			    arr[x].innerHTML = "Texto agregado por JavaScript";}
+		/*  element.childNodes: devuelve un arreglo de los elementos de los nodos hijo.
+			element.firstChild: devuelve el primer nodo hijo de un elemento.
+			element.lastChild: devuelve el ultimo nodo hijo de un elemento.
+			element.hasChildNodes: devuelve valor booleano verdadero si un elemento tiene algun nodo hijo, de lo contrario devuelve falso.
+			element.nextSibling: devuelve el proximo nodo al mismo nivel del arbol.
+			element.previousSibling: devuelve el nodo previo al mismo nivel del arbol.
+			element.parentNode: devuelve el nodo padre de un elemento.*/
+		var el = document.getElementById("myimg");
+		el.src = "Aysi.jpg"
+		var x = document.getElementById("estilo");
+		x.style.color = "6600FF";
+		x.style.width = "100px";
+		
+
+
+		</script>
+	</body>
+</html>
