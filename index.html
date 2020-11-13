@@ -1,18 +1,39 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 	<head>
-		<meta charset="utf-8">
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial scale =1.0"> 
 		<Title>Mi página en eterna construcción</title>
-		<link rel="stylesheet" href="formato.css">
+		<link rel="stylesheet" href="estilo.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"></link>
 	</head>
-	<nav>
-		<ul>
+	<nav class="nav-raiz">
+		<img src="img/board.jpg" alt="logo" class="nav-logo">
+		<ul class="menu-pr">
+			<li><a href="circdig.html">Circuitos digitales</a></li>
+			<li><a href="verilog.html">FPGA Verilog</a></li>
+			<li><a href="cpp.html">C++</a></li>
+			<li><a href="javasc.html">JavaScript</a></li>
+			<li><a href="simspice.html">Simulaciones SPICE</a></li>
 			<li><a href="pt/indexpt.html">Português</a></li>
 			<li><a href="en/indexen.html">English</a></li>
 			<li><a href="Acerca_es.html">Acerca de...</a></li>
 		</ul>
+		<ul class="nav-menuder">
+			<li>
+				<a href="#">
+					<i class="fas fa-search"></i>
+				</a>
+			</li>
+		</ul>
 	</nav>
-	<body id="FondoEsp">
+	<body class="contenedor">
+		<header class="nueva-entrada">
+			<h1>El artículo nuevo</h1>
+			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate nobis cumque dolorum! Minima pariatur, itaque fugit praesentium dolor rem inventore soluta totam beatae, necessitatibus autem possimus quae aspernatur alias. Numquam!</p>
+			<a href="#" class="btn">Leerlo!<i class="fas fa-angle-double-right"></i></a>
+
+		</header>
 		<p> Apenas está empollando </p>
 	</body>
 </html>
