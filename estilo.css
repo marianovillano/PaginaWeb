@@ -1,8 +1,9 @@
+/*Reseteo total de formatos HTML*/
 *{
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-}
+}/*Formato predefinido en página*/
 body{
     background-color: black;
     color: white;
@@ -16,10 +17,23 @@ a{
 ul{
     list-style: none;
 }
+h1{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin: 20px 0;
+}
+p{
+    text-align: justify;
+    text-indent: 1em;
+    margin: 10px 0;
+}
+/*Márgenes de la página*/
 .contenedor{
     width: 90%;
     margin: auto;
-}
+}/*Menú en pantalla de PC*/
 .nav-raiz{
     font-size: 17px;
     display: flex;
@@ -45,7 +59,7 @@ ul{
 }
 .menu-pr li a{
     padding: 2px;
-}
+}/*Botón de menú: sólo aparece cuando pantalla sea menor a 720 píxeles*/
 .menu-btn{
     position: absolute;
     cursor: pointer;
@@ -54,7 +68,7 @@ ul{
     z-index: 2;
     font-size: 2rem;
     display: none;
-}
+}/*Formato recuadro de nueva entrada*/
 .nueva-entrada{
     width: 100%;
     height: 400px;
@@ -68,12 +82,11 @@ ul{
     justify-content: end;
 }
 .nueva-entrada h1, .nueva-entrada p{
-    margin: 45px;
-}
+    margin: 10px;
+}/*Formato de botón de leerlo! nueva entrada*/
 .btn{
     cursor: pointer;
     display: inline-block;
-    border: 0;
     font-weight: bold;
     padding:10px 20px;
     background-color: #262626;
@@ -81,11 +94,10 @@ ul{
     border: 1px solid white;
     opacity: 0.7;
     margin: 10px 0;
-
 }
 .btn:hover{
     opacity: 1;
-}
+}/*Formato de las filas de entradas anteriores*/
 .art-cards{
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -108,7 +120,7 @@ ul{
 }
 .art-cards a:hover{
     text-decoration: underline;
-}
+}/*Formato de la sección de redes sociales*/
 .social{
     margin: 50px;
 }
@@ -124,11 +136,10 @@ ul{
 }
 .enl-social a{
     margin: 0 10px;
-
 }
 .enl-social i{
     font-size: 3rem;
-}
+}/*Formato del pie de página:*/
 .cont-footer{
     background-color: #2f2340;
     font-size: 12px;
@@ -144,26 +155,28 @@ ul{
 }
 .cont-footer ul li{
     line-height: 3;
-}
-@media(max-width: 710px){
+}/*Cambios de formato cuando la pantalla se reduce a 720 píxeles:*/
+@media(max-width: 720px){
+    /*Aparece el botón de menús:*/
     .menu-btn{
         display: block;
-    }
+    }/*Formato del botón de menús:*/
     .nav-raiz ul{
         display: block;
         position: absolute;
+        z-index: 2;
         top: 0;
         left: 0;
         background-color: #2f3640;
         height: 100%;
         padding: 10px;
         opacity: .9;
-        transform: translateX(-250px);
+        transform: translateX(-250px); /*Por defecto fuera de la pantalla*/
         transition: .5s ease-in-out;
-    }
+    }/*Aparición de menú al presionar botón:*/
     .nav-raiz ul.menu-pr.show{
         transform: translateX(-20px);
-    }
+    }/*Cambio de número de columnas de las entradas anteriores y el pié de página:*/
     .art-cards, .cont-footer{
         grid-template-columns: repeat(2, 1fr);
 
