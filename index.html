@@ -4,13 +4,15 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial scale =1.0"> 
 		<Title>Mi página en eterna construcción</title>
-		<link rel="icon" href="img/logo.jpg" type="image/jpg">
+		<link rel="icon" href="/img/logo.jpg" type="image/jpg">
+		
 		<!--Llamado de estilos CCS-->
-		<link rel="stylesheet" href="estilo.css">
+		<link rel="stylesheet" href="/estilo.css">
 		<!--Llamado de estilos de fuente CCS Font Awesome-->
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"></link>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 		<!--Llamado de íconos de banderas-->
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css"></link>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css">
+		
 		
 	</head>
 	<!--Menú principal-->
@@ -23,8 +25,7 @@
 				</a>
 			</li>
 			<li><a href="es/circdig.html">Circuitos digitales</a></li>
-			<li><a href="es/verilog.html">Verilog</a></li>
-			<li><a href="es/cpp.html">C++</a></li>
+			<li><a href="es/prog.html">Programación</a></li>
 			<li><a href="es/javasc.html">JavaScript</a></li>
 			<li><a href="es/simspice.html">Simulaciones SPICE</a></li>
 			<li><a href="es/acerca.html">Acerca de...</a></li>
@@ -38,27 +39,29 @@
 			<i class="fas fa-bars"></i>
 		</div>
 		<!--Entrada más reciente-->
-		<header class="nueva-entrada">
-			<h1>El artículo nuevo</h1>
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate nobis cumque dolorum! Minima pariatur, itaque fugit praesentium dolor rem inventore soluta totam beatae, necessitatibus autem possimus quae aspernatur alias. Numquam!</p>
+		<header class="nueva-entrada" id="img-circdig">
+			<p class="fecha">23/11/2020</p>
+			<h1>Proyecto personal de generador de patrones de vídeo</h1>
+			<p>Un generador de patrones de vídeo es un instrumento muy útil en la reparación de televisores...</p>
 			<!--Botón leerlo!-->
-			<a href="#" class="btn">Leerlo!<i class="fas fa-angle-double-right"></i></a>
+			<a href="/es/digital/genpatrones.html" class="btn">Leerlo!<i class="fas fa-angle-double-right"></i></a>
 
 		</header>
 	<!--Aquí las entradas van bajando en orden de aparición, filas de 4 artículos-->
 	<div class="art-cards">
 		<div>
-			<img src="img/cpp.jpg" title="Artículo C++" alt="artículo C++">
-			<h3>Lorem, ipsum dolor.</h3>
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, possimus.</p>
-			<a href="#">Leer más <i class="fas fa-angle-double-right"></i></a>
+			<img src="/img/digital.jpg" title="Generador de patrones de barra con PIC" alt="Assembler">
+				<h3>Proyecto personal de generador de patrones de vídeo</h3>
+				<p>Un generador de patrones de vídeo es un instrumento muy útil en la reparación de televisores...</p>
+				<a href="/es/digital/genpatrones.html">Leer más <i class="fas fa-angle-double-right"></i></a>
 		</div>
 		<div>
-			<img src="img/javascript.jpg" title="Artículo JavaScript" alt="artículo JavaScript">
-			<h3>Lorem, ipsum dolor.</h3>
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, possimus.</p>
-			<a href="#">Leer más <i class="fas fa-angle-double-right"></i></a>
+			<img src="img/python.jpg" title="Artículo Python" alt="artículo programación">
+			<h3>Manejo simple de archivos en Phyton</h3>
+			<p>Ejemplo de código de Manejo simple de archivos en Phyton.</p>
+			<a href="/es/prog/ejemplo_de_python.html">Leer más <i class="fas fa-angle-double-right"></i></a>
 		</div>
+		
 		<div>
 			<img src="img/verilog.jpg" title="Articulo Verilog" alt="artículo Verilog">
 			<h3>Lorem, ipsum dolor.</h3>
@@ -84,11 +87,11 @@
 	<section class="social">
 		<p>Sígueme en:</p>
 		<div class="enl-social">
-			<a href="#"><i class="fab fa-linkedin"></i></a>
-			<a href="#"><i class="fab fa-github"></i></a>
+			<a href="https://www.linkedin.com/in/marianovillano2014/" target="_blank"><i class="fab fa-linkedin"></i></a>
+			<a href="https://github.com/marianovillano?tab=repositories" target="_blank"><i class="fab fa-github"></i></a>
 		</div>
 	</section>
-	<p class="hmundo"> Ya está tomando forma! </p>
+	<p class="hmundo"> Ya está tomando forma! <i class="fas fa-copyright"></i></p>
 	<footer>
 		<!--Referencias futuras, que por ahora no se usan-->
 		<div class="cont-footer">
