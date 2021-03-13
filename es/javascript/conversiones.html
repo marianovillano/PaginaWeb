@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de magnitudes</title>
+</head>
+<body>
+    <p>Aquí tenemos una simple calculadora conversora de magnitudes</p>
+    <form name="temperatura">
+    <input type="text" id="dato1" onchange="convertir()">
+    <select name="unTemp1" id="temp1" onchange="convertir()">
+        <option value="1">ºC</option>
+        <option value="2">ºF</option>
+        <option value="3">K</option>
+    </select>
+    <input type="text" name="dato2" id="dato2">
+    <select name="unTemp2" id="temp2">
+        <option value="1">ºC</option>
+        <option value="2">ºF</option>
+        <option value="3">K</option>
+    </select>
+    </form>
+<script>
+    console.log("Conectado!");
+    function convertir(){
+        var dato1 = document.getElementById("dato1").value;
+        switch (document.temperatura.unTemp1.value) {
+            case '1':
+                document.temperatura.dato2.value = dato1 * 2;
+                break;
+            case '2':
+                document.temperatura.dato2.value = dato1 * 3;
+                break;
+            case '3':
+                document.temperatura.dato2.value = dato1 * 4;
+                break;
+
+        }
+    }
+    
+</script>
+</body>
+</html>

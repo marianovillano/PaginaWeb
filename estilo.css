@@ -1,52 +1,27 @@
 /*Reseteo total de formatos HTML*/
 *{
-    box-sizing: border-box; 
-    margin: 0; 
-    padding: 0;}
+    box-sizing: border-box; margin: 0; padding: 0;}
 /*Formato predefinido en pagina*/
 body{
-    background-color: black; 
-    color:gray;
-    font-size: 16px; 
-    font-family: Arial, Helvetica, sans-serif;}
+    background-color: black; color:gray; font-size: 16px; font-family: Arial, Helvetica, sans-serif;}
 a{
-    color: white; 
-    text-decoration: none;}
+    color: white; text-decoration: none;}
 ul{
     list-style: none;}
 h1 {
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    font-size: 40px; 
-    margin: 40px 0 0px 0;}
+    display: flex; align-items: center; justify-content: center; font-size: 40px; margin: 40px 0 0px 0;}
 p.contenido{
-    text-align:justify; 
-    text-indent:1em; 
-    font-size:18pt; 
-    line-height:2em; 
-    margin:10px 0;}
+    text-align:justify; text-indent:1em; font-size:18pt; line-height:2em; margin:10px 0;}
+p.ecuaciones{
+    text-align:center; font-size:16pt; line-height:2em; margin:10px 0;}
 p.fecha{
-    width: 100%;
-    display: block;
-    text-align: center;
-    font-family: Arial, Helvetica, sans-serif;
-    margin-bottom: 80px;
-
-}
+    width: 100%; display: block; text-align: center; font-family: Arial, Helvetica, sans-serif; margin-bottom: 80px;}
 /*Margenes de la pagina*/
 .contenedor{
-    width: 90%; 
-    margin: auto;}
+    width: 90%; margin: auto;}
 /*Menu en pantalla de PC*/
 .nav-raiz{
-    font-size: 17px; 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center;    
-    height: 60px; 
-    padding: 20px 0; 
-    margin-bottom:40px;}
+    font-size: 17px; display: flex; justify-content: space-between; align-items: center; height: 60px; padding: 20px 0; margin-bottom:40px;}
 .nav-logo{
     width: 30px;}
 .menu-pr{
@@ -59,147 +34,88 @@ p.fecha{
     padding: 2px;}
 /*Boton de menu: solo aparece cuando pantalla sea menor a 720 pixeles*/
 .menu-btn{
-    position: absolute;
-    cursor: pointer;
-    top: 15px;
-    right: 30px;
-    z-index: 2;
-    font-size: 2rem;
-    display: none;}
+    position: absolute; cursor: pointer; top: 15px; right: 30px; z-index: 2; font-size: 2rem; display: none;}
 /*Formato recuadro de nueva entrada*/
 .nueva-entrada{
-    width: 100%;
-    height: 400px;
-    background-color: blue;
-    color: white;
-    padding-top: 50px; 
-    padding-bottom: 50px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: end;
-    margin-bottom: 110px;}
+    width: 100%; height: 400px; background-color: blue; color: white; padding-top: 30px; padding-bottom: 50px; display: flex; flex-direction: column; align-items: center; justify-content: end; margin-bottom: 110px;}
 .nueva-entrada h1, .nueva-entrada p{
-    margin: 10px;}
-.nueva-entrada p.fecha{
-    display: flex;
-    justify-content: right;
-    margin-bottom: 150px}
+    margin: 10px; text-align: center;}
 #img-python{
     background: url(/img/python.jpg) no-repeat center center/cover;}
 #img-circdig{
     background: url(/img/ICs.jpg) no-repeat center center/cover;}
+#img-simspice{
+    background: url(/img/spice.jpg) no-repeat center center/cover;}
+#img-titulo{
+    background: url(/img/electronica.jpg) no-repeat center center/cover;}
+#img-portada{
+    background: url(/img/portada.jpg) no-repeat center center/cover;}
+#img-jvscrpt{
+    background: url(/img/javascript.jpg) no-repeat center center/cover;
+}
+.tit-articulo{
+    width: 100%; height: 500px; background-color: blue; color: white; padding-top: 50px; padding-bottom: 50px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 110px;}
 /*Formato de boton de leerlo! en nueva entrada*/
 .btn{
-    cursor: pointer;
-    display: inline-block;
-    font-weight: bold;
-    padding:10px 20px;
-    background-color: #262626;
-    font-size: 15px;
-    border: 1px solid white;
-    opacity: 0.7;
-    margin: 10px 0;}
+    cursor: pointer; display: inline-block; font-weight: bold; padding: 10px 20px; background-color: #262626; font-size: 15px; border: 1px solid white; opacity: 0.7; margin: 10px 0;}
 .btn:hover{
     opacity: 1;}
 /*Formato de las filas de articulos en la seccion de entradas anteriores*/
 .art-cards{
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 25px;
-    margin-top: 20px;}
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; margin-top: 20px;}
 .art-cards img{
-    width: 100%;
-    height: 180px;}
+    width: 100%; height: 180px;}
 .art-cards h3{
-    font-size: 18px;
-    text-align: center;
-    margin: 10px 0;}
+    font-size: 18px; text-align: center; margin: 10px 0;}
 .art-cards p{
-    font-size: 14px;
-    text-align: justify;}
+    font-size: 14px; text-align: justify;}
 .art-cards a{
-    padding: 10px 0;
-    text-transform: uppercase;
-    display: inline-block;
-    font-weight: bold;}
+    padding: 10px 0; text-transform: uppercase; display: inline-block; font-weight: bold;}
 .art-cards a:hover{
     text-decoration: underline;}
 /*Formato de la sección de redes sociales*/
 .social{
     margin: 50px;}
 .social p{
-    text-align: center;
-    font-size: 20px;
-    margin-bottom: 20px;}
+    text-align: center; font-size: 20px; margin-bottom: 20px;}
 .enl-social{
-    display: flex;
-    align-items: center;
-    justify-content: center;}
+    display: flex; align-items: center; justify-content: center;}
 .enl-social a{
     margin: 0 10px;}
 .enl-social i{
     font-size: 3rem;}
 /*Formato del pie de pagina:*/
 .cont-footer{
-    background-color: #2f2340;
-    font-size: 12px;
-    padding:35px 0;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    align-items: center;
-    justify-content: center;}
+    background-color: #2f2340; font-size: 12px; padding:35px 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; align-items: center; justify-content: center;}
 .cont-footer ul{
     margin: 0 auto;}
 .cont-footer ul li{
     line-height: 3;}
 .divconsola{
-    max-width: 50%;
-    display: flex;
-    transform: translateX(50%); 
-    font-family: monospace;
-    font-size: 14px;
-    margin-bottom: 10px;
-    background-color: rgb(0, 0, 110);}
+    max-width: 50%; display: flex; transform: translateX(50%); font-family: monospace; font-size: 14px; margin-bottom: 10px; background-color: rgb(0, 0, 110);}
 .divconsola div:first-of-type{
-    width: 3%;
-    opacity: .7;}
+    width: 3%; opacity: .7;}
 /*Formato portada de paginas*/
 .portada{
-    width: 100%;
-    height: 400px;
-    background-color: blue;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 110px;}
+    width: 100%; height: 400px; background-color: blue; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 110px;}
 /*Formato de matriz de enlaces de fotos 1x4*/
 .img-mini-x4{
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
-    margin-bottom: 15px;}
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 15px;}
 .img-mini-x4 img{
-    width: 100%;
-    height: 180px;}
+    width: 100%; height: 180px;}
 /*Formato de enlaces de fotos simple*/
 .img-mini-simple{
     margin: 50px 0;}
 .img-mini-simple img{
-    display: flex;
-    width:100%;
-    max-height: 600px;}
+    display: flex; width:100%; max-height: 600px;}
+/*Imagenes simples reducidas al 50%*/
+img.reduc50{
+    display: flex; margin: auto auto 50px auto; width: 50%; height: 50%;}
 /*Consola de contenidos grandes*/
 .consola-ext{
-    display: flex;
-    justify-content: center;
-    width: 780px;
-    margin: 0 0 50px 200px;
-    background-color: gray;}
-
+    display: flex; justify-content: center; width: 780px; margin: 0 0 50px 200px; background-color: gray;}
+.pfooter{
+    width: 100%; height: 300px;}
 
 
 /*Cambios de formato cuando la pantalla se reduce a menos de 720 pixeles:*/
@@ -209,44 +125,30 @@ p.fecha{
         display: block;}
     /*Formato del botón de menus:*/
     .nav-raiz ul{
-        display: block;
-        position: absolute;
-        z-index: 2;
-        top: 0;
-        left: 0;
-        background-color: #2f3640;
-        height: 100%;
-        padding: 10px;
-        opacity: .9;
-        transform: translateX(-250px); /*Por defecto fuera de la pantalla*/
-        transition: .5s ease-in-out;}
+        display: block; position: absolute; z-index: 2; top: 0; left: 0; background-color: #2f3640; height: 100%; padding: 10px; opacity: .9; transform: translateX(-250px); transition: .5s ease-in-out;}
     /*Aparicion de menu al presionar boton:*/
     .nav-raiz ul.menu-pr.show{
         transform: translateX(-20px);}
     /*Cambio de numero de columnas de las entradas anteriores y el pie de pagina:*/
-    .art-cards, .cont-footer{
+    .art-cards, .cont-footer, .img-mini-x4{
         grid-template-columns: repeat(2, 1fr);}
     h1{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 20px;
-        margin: 20px 0;}
+        display: flex; align-items: center; justify-content: center; font-size: 20px; margin: 20px 0;}
     p.contenido{
-        text-align: justify;
-        text-indent: 1em;
-        font-size: 12pt;
-        line-height: 2em;
-        margin: 10px 0;}
+        text-align: justify; text-indent: 1em; font-size: 12pt; line-height: 2em; margin: 10px 0;}
     .divconsola{
-        max-width: 100%;
-        display: flex;
-        transform: translateX(0);
-        font-family: monospace;
-        font-size: 12px;
-        margin-bottom: 10px;
-        background-color: rgb(0, 0, 110);}
+        max-width: 100%; display: flex; transform: translateX(0); font-family: monospace; font-size: 12px; margin-bottom: 10px; background-color: rgb(0, 0, 110);}
     .divconsola div:first-of-type{
-        width: 3%;
-        opacity: .7;}
+        width: 3%; opacity: .7;}
+    .consola-ext{
+        width: 100%; margin: 0;}
+    .consola-ext cod{
+        font-size: 5px;}
+    p.ecuaciones{
+        font-size: 10px;}
+    .pfooter{
+        width: 100%; height: 500px;}
+    /*Se elimina la reduccion al 50% de las imagenes*/
+    img.reduc50{
+        width: 100%; height: 100%}
 }

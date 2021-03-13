@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial scale =1.0"> 
+		<Title>Simulación de malla simple</title>
+		<link rel="icon" href="/img/logo.jpg" type="image/jpg">
+		<!--Llamado de estilos CCS-->
+		<link rel="stylesheet" href="/estilo.css">
+		<!--Llamado de estilos de fuente CCS Font Awesome-->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+		<!--Llamado de íconos de banderas-->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css">
+		<!--Llamado de script generador de ecuaciones matematicas MathJax-->
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.1/es5/tex-mml-chtml.js"></script>
+    </head>
+    <nav class="nav-raiz">
+		<img src="/img/logo.jpg" alt="logo" title="logo" class="nav-logo">
+		<ul class="menu-pr">
+			<li><a href="/es/simspice.html"><i class="fas fa-angle-double-left"></i> Regresar...</a></li>
+			<li><a href="/pt/simspice.html" title="Português"><i class="flag-icon flag-icon-pt"></i></a></li>
+			<li><a href="/en/simspice.html" title="English"><i class="flag-icon flag-icon-gb"></i></a></li>
+            <li><a href="/it/simspice.html" title="Italiano"><i class="flag-icon flag-icon-it"></i></a></li>
+            <li><a href="/index.html" title="Home"><i class="fas fa-home"></i></a></li>
+		</ul>
+		<!--Botón de menú, aparece sólo cuando se navega de una pantalla menor-->
+		<div class="menu-btn">
+			<i class="fas fa-bars"></i>
+		</div>
+	</nav>
+<body class="contenedor">
+	<!--Portada de la página-->
+	<header class="tit-articulo" id="img-titulo">
+		<h1>Simulación de malla simple</h1>
+		<p>01/12/2020</p>
+	</header>
+    <article>
+		<p class="contenido">Este es un ejemplo muy sencillo de simulación SPICE de una malla simple por análisis de Kirchhoff, es un ejemplo inventado por mi y no está sacado de algún libro en específico, pero es probable que encuentres, sino el mismo, algo muy parecido.</p><br>
+		<img src="/img/mallasimple.png" alt="una malla simple" class="reduc50">
+		<p class="contenido">Si aplicamos la regla de mallas de Kirchhoff en las dos redes que forman los circuitos, obtenemos las siguientes ecuaciones:</p><br>
+		<p class="ecuaciones">\(10V-10I_1-30(I_1-I_2)-40I_1=0\)<br>\(30(I_1-I_2)-20I_2-20V-50I_2=0\)</p><br>
+		<p class="contenido">Minimizando las ecuaciones tenemos:</p><br>
+		<p class="ecuaciones">\(-80I_1+30I_2=-10\)<br>\(30I_1-100I_2=20\)</p><br>
+		<p class="contenido">En la segunda ecuación despejamos \(I_1\):</p><br>
+		<p class="ecuaciones">\(I_1={20+100I_2\over 30}\)</p><br>
+		<p class="contenido">Y sustituyendo en la primera ecuación tenemos:</p><br>
+		<p class="ecuaciones">\(-80({20+100I_2 \over 30})+30I_2=-10\)<br><br>\({-1600-8000I_2 \over 30}+30I_2=-10\)<br><br>\(-53,33-266,66I_2+30I_2=-10\)</p><br>
+		<p class="ecuaciones">\(I_2={43,33\over -236,66}=-183,08mA\)</p><br>
+		<p class="contenido">Para finalizar sustituimos el valor obtenido en la segunda ecuación, obteniendo:</p><br>
+		<p class="ecuaciones">\(I_1=53,36mA\)</p><br>
+		<p class="contenido">Ahora bien, todo este cálculo nos sirve para comprobar que la simulación está funcionando y haciendo bien las cosas. El programa utilizado para las simulaciones SPICE es <a href="https://www.analog.com/en/design-center/design-tools-and-calculators/ltspice-simulator.html" target="_blank">LTspice</a> de <del>Linear Technologies</del> Analog Devices. Es muy potente y, además, gratuito, si bien su interfaz para crear un esquemático no es muy amigable, su capacidad de simulación es muy buena, por supuesto, sólo se pueden simular los circuitos integrados del fabricante, pero se compensa por el hecho que están muy bien surtidos.</p><br>
+		<p class="contenido"> Una vez hecho el trabajo de dibujar el diagrama en el programa, se debe configurar la simulación; en este caso como sólo se quiere comprobar las corrientes calculadas, se necesita un análisis transitorio con un segundo de duración, esto se consigue en el menú <i>Simulate > Edit simulation cmd</i>, escoge la pestaña <i>Transient</i> y, en la casilla <i>Stop time</i> colocar 1 segundo o el tiempo que quieras.</p><br>
+		<img src="/img/opsimtrans1.png" alt="opcion de simulacion transitorio" class="reduc50">
+		<p class="contenido">La simulación queda así:</p>
+		<img src="/img/i1mallasimple.png" alt="I1" class="reduc50">
+		<img src="/img/i2mallasimple.png" alt="I2" class="reduc50">
+		<p class="contenido">Los signos están invertidos porque el simulador tomó la dirección de paso de las corrientes contraria a la que tomé para resolver el ejercicio. La solución a este detalle es simplemente girar 180 grados las resistencias en este caso.</p>
+	</article>
+		<!--Sección de redes sociales-->
+		<section class="social">
+			<p>Sígueme en:</p>
+			<div class="enl-social">
+				<a href="https://www.linkedin.com/in/marianovillano2014/" target="_blank"><i class="fab fa-linkedin"></i></a>
+				<a href="https://github.com/marianovillano?tab=repositories" target="_blank"><i class="fab fa-github"></i></a>
+			</div>
+		</section>
+		<footer>
+			<iframe src="/es/footer.html" frameborder="0" class="pfooter" scrolling="no"></iframe>
+		</footer>
+    <!--Efecto de aparición de elementos mientras se baja-->
+	<script src="https://unpkg.com/scrollreveal"></script>
+	<!--El script principal-->
+	<script src="/main.js"></script>
+</body>
+</html>

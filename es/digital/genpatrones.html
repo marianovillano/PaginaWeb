@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
     <head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial scale =1.0"> 
@@ -27,12 +27,14 @@
 		</div>
 	</nav>
 <body class="contenedor">
-    <article>
-		<h1>Proyecto personal de generador de patrones de vídeo</h1>
-		<p class="fecha">23/11/2020</p>
-        <p class="contenido">Un generador de patrones de vídeo es <del>era</del> un instrumento muy útil en la reparación de televisores, sirve para inyectar una señal de vídeo con ciertos patrones que son útiles bien para revisar el "camino" de la señal o, bien para el ajuste de la calidad de la imagen, muy necesaria para el ya extinto TRC. En la acutalidad este instrumento es básicamente un software que se usa en los televisores inteligentes (que prácticamente son computadores) y no un dispositivo electrónico.</p><br>
-		<p class="contenido">Este instrumento, en su tiempo, era un dispositivo bastante caro que en esos días no me podía dar el lujo de pagar, mas lo necesitaba para mi día a día en la reparación y ajuste de pantallas. Estamos hablando del año 2004, donde la tecnología LCD si bien estaba irrumpiendo con mejoras como el TFT, aun faltaban unos pocos años más para que se masificaran en las pantallas de televisores (salto definitivo con el HD y la TDT) por lo que el TRC aún era el rey de la casa, aunque sus tiempos estaban por acabar. Entonces, me acordé que estudié electrónica y me dije a mí mismo: puedes hacer uno con lo que tu bolsillo te permita, y ¡pude!</p><br>
-		<p class="contenido">Pero vayamos al grano: este generador de patrones es básicamente un microcontrolador que genera las bases de tiempo necesarias, que en conjunto con un codificador de vídeo compuesto y el acondicionamiento de la salida, sirven para la formación de ciertos patrones de colores y formas necesarias, que tienen como objetivo técnico ajustar el croma, la saturación de los colores y, la alineación de las rejillas del TRC. Para no hacer el cuento largo y explicar con tanto detalle unos formatos de vídeo más que caducos, les resumiré el cuento: la televisión analógica fue desarrollada desde los años 30 del siglo XX en blanco y negro y luego a colores en los 40 del mismo siglo, y como ahora con la TDT, cada región se decantó por estándares elegidos arbitrariamente: América y Japón a la cabeza con el sistema NTSC de transmisión a colores, Europa con el sistema PAL, y la URSS (con Francia) con el sistema SECAM. Como yo vivía en Venezuela en aquellos tiempos, me tocó investigar las especificaciones NTSC-M, así que me puse manos a la obra...</p><br>
+	<header class="tit-articulo" id="img-titulo">
+		<h1>Generador de patrones de vídeo</h1>
+		<p>23/11/2020</p>
+	</header>
+    <article>	
+        <p class="contenido">Un generador de patrones de vídeo <del>era</del> es un instrumento muy útil en la reparación de televisores; sirve para inyectar una señal de vídeo con ciertos patrones que son útiles para revisar el "camino" de la señal o, para el ajuste de la calidad de la imagen, muy necesaria para el ya extinto TRC. En la acutalidad este instrumento se convirtió básicamente un software que se usa en los televisores inteligentes (que prácticamente son computadores) y no un dispositivo electrónico.</p><br>
+		<p class="contenido">Este instrumento, en su tiempo, era un dispositivo bastante caro que en esos días no me podía dar el lujo de pagar, mas lo necesitaba para mi día a día en la reparación y ajuste de pantallas. Estamos situados del año 2004, donde la tecnología LCD si bien estaba irrumpiendo con mejoras como el TFT, aun faltaban unos pocos años más para que se masificaran en las pantallas de televisores (salto definitivo con el HD y la TDT) por lo que el TRC aún era el rey de la casa, pero sus tiempos estaban por acabar. Entonces, me acordé que estudié electrónica y me dije a mí mismo: puedes hacer uno con lo que tu bolsillo te permita, y ¡pude!</p><br>
+		<p class="contenido">Pero vayamos al grano: este generador de patrones es básicamente un microcontrolador que genera las bases de tiempo necesarias, que en conjunto con un codificador de vídeo compuesto y el acondicionamiento de la salida, sirven para la formación de ciertos patrones de colores y geometrías necesarias, que tienen como objetivo técnico ajustar el croma, la saturación de los colores y, la alineación de las rejillas del TRC. Para no hacer el cuento largo y explicar con tanto detalle unos formatos de vídeo condenados a muerte, les resumiré el cuento: la televisión analógica fue desarrollada desde los años 30 del siglo XX en blanco y negro y luego a colores en los 40 del mismo siglo, y como ahora con la TDT, cada región se decantó por estándares elegidos con criterios muy diferentes: América y Japón se decantaron con el sistema NTSC de transmisión a colores, Europa con el sistema PAL, y la URSS (y Francia) con el sistema SECAM. Como yo vivía en Venezuela en aquellos tiempos, me tocó investigar las especificaciones NTSC-M, así que me puse manos a la obra...</p><br>
 		<p class="contenido">Y hé aquí el diagrama esquemático del generador:</p>
 		<div class="img-mini-simple">
 			<a href="/img/genpatv-sch.jpg" title="Haz clic para su tamaño real" target="_blank"><img src="/img/genpatv-sch.jpg"></a>
@@ -41,7 +43,7 @@
 		<p class="contenido">La parte analógica del circuito tenemos al IC MC1377P, que es el codificador RGB, éste toma las señales digitales de colores RGB junto con las de sincronismos y forma la señal de video compuesta en banda base: la señal de sincronismo ingresa por el pin 2, los pines 3, 4 y 5 son las entradas de las señales R, G y B respectivamente. La salida de la señal de vídeo en el pin 9, se acopla a la salida (entrada del TV) por medio de un resistor de 75 ohm. Más detalles del circuito integrado lo puedes encontrar en su <a href="https://www.alldatasheet.es/datasheet-pdf/pdf/1131813/MOTOROLA/MC1377P.html" title="alldatasheet" target="_blank">hoja de datos</a>. Y por último, tenemos a los reguladores lineales 7805 que alimenta al microcontrolador y el 7812 que alimenta al codificador.</p><br>
 		<p class="contenido">Para terminar, no puede haber microcontrolador que funcione sin un programa o firmware; éste fue hecho en lenguaje Assembler y, si bien parece largo y complicado, en realidad son rutinas sencillas y fáciles de seguir (tampoco programé inteligencia artificial):</p><br>
 		<div class="consola-ext">
-			<object data="/codigos/genpatv10.txt" type="text/plain" width="780" height="900"></object>
+			<object data="/code/genpatv10.txt" type="text/plain" width="780" height="900"></object>
 		</div>
 		<p class="contenido">Lo increíble del proyecto es que también le saqué fotos al producto terminado y funcionando, y estas fotos sobrevivieron al paso del tiempo, de discos duros dañados y datos perdidos:</p><br>
 		<div class="img-mini-x4">
@@ -80,69 +82,7 @@
 			</div>
 		</section>
 		<footer>
-			<!--Referencias futuras, que por ahora no se usan-->
-			<div class="cont-footer">
-				<ul>
-					<li><h3>Título!</h3></li>
-					<li>
-						<a href="#">Título 1</a>
-					</li>
-					<li>
-						<a href="#">Título 1</a>
-					</li>
-					<li>
-						<a href="#">Título 1</a>
-					</li>
-					<li>
-						<a href="#">Título 1</a>
-					</li>
-				</ul>
-				<ul>
-					<li><h3>Título!</h3></li>
-					<li>
-						<a href="#">Título 1</a>
-					</li>
-					<li>
-						<a href="#">Título 1</a>
-					</li>
-					<li>
-						<a href="#">Título 1</a>
-					</li>
-					<li>
-						<a href="#">Título 1</a>
-					</li>
-				</ul>
-				<ul>
-					<li><h3>Título!</h3></li>
-					<li>
-						<a href="#">Título 1</a>
-					</li>
-					<li>
-						<a href="#">Título 1</a>
-					</li>
-					<li>
-						<a href="#">Título 1</a>
-					</li>
-					<li>
-						<a href="#">Título 1</a>
-					</li>
-				</ul>
-				<ul>
-					<li><h3>Título!</h3></li>
-					<li>
-						<a href="#">Título 1</a>
-					</li>
-					<li>
-						<a href="#">Título 1</a>
-					</li>
-					<li>
-						<a href="#">Título 1</a>
-					</li>
-					<li>
-						<a href="#">Título 1</a>
-					</li>
-				</ul>
-			</div>
+			<iframe src="/es/footer.html" frameborder="0" class="pfooter" scrolling="no"></iframe>
 		</footer>
     <!--Efecto de aparición de elementos mientras se baja-->
 	<script src="https://unpkg.com/scrollreveal"></script>

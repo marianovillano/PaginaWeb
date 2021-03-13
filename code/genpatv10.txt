@@ -1,0 +1,1067 @@
+;**************************************************************************************************
+;                       GENERADOR DE PATRONES DE VIDEO 18/03/2004 VERSION 1.0                     *
+;**************************************************************************************************
+;ASIGNACION DE PUERTOS:
+;PORTB(0): SINCRONISMOS
+;PORTB(2): AZUL
+;PORTB(3): ROJO
+;PORTB(4): VERDE
+;PARA LOS PATRONES DE RASTER Y BARRAS EL VIDEO ES ENTRELAZADO
+;LOS PUNTOS Y LA CUADRICULA SE HACEN CON VIDEO NO ENTRELAZADO PARA EVITAR EL "FLICKER"
+
+;LOS VALORES DE LA NORMA NTSC-M PARA LOS PULSOS DE SINCRONISMO SON LOS SIGUIENTES:
+
+;PULSOS PRE Y POST-ECUALIZADORES EN SU SEMICICLO ANGOSTO:.................................. 2,5uS
+;PULSOS PRE Y POST-ECUALIZADORES EN SU SEMICICLO ANCHO:.................................... 29,25uS
+;PULSO DE SINCRONISMO VERTICAL EN SU SEMICICLO ANGOSTO:.................................... 4,4uS
+;PULSO DE SINCRONISMO VERTICAL EN SU SEMICICLO ANCHO:...................................... 27,3uS
+;LINEA HORIZONTAL CON SINCRONISMO INCLUIDO:................................................ 63,5uS
+;MEDIA LINEA HORIZONTAL CON SINCRONISMO INCLUIDO:.......................................... 31,75uS
+;PORTICO ANTERIOR:......................................................................... 1,5uS
+;SINCRONISMO HORIZONTAL:................................................................... 4,7uS
+;PORTICO POSTERIOR:........................................................................ 4,7uS
+;LINEA DE IMAGEN HORIZONTAL:............................................................... 52,6uS
+;ANCHO DE LAS BARRAS DE COLORES:........................................................... 6,57uS
+
+;LOS CALCULOS QUE SE REALIZARON PARA LA DURACION DE LOS SINCRONISMOS SE HICIERON EN BASE AL TIEMPO
+;DE INSTRUCCION DEL PIC16F84A-20 QUE ES DE 0,2uS, DUPLICANDOSE EN CASO DE UNA INSTRUCCION GOTO, 
+;DECFSZ Y BTFSS, ESTOS ULTIMOS CUANDO LA CONDICION DE 0 Y 1 SE CUMPLEN RESPECTIVAMENTE, LOS 
+;RESULTADOS DE ESTOS CALCULOS SON:
+
+;CICLOS PARA PULSOS PRE Y POST-ECUALIZADOR EN SU SEMICICLO ANGOSTO:........ 12-13 (2,4uS-2,6uS)
+;CICLOS PARA PULSOS PRE Y POST-ECUALIZADOR EN SU SEMICICLO ANCHO:.......... 146-147 (29,2uS-29,4uS)
+;CICLOS PARA PULSOS DE SINCRONISMO VERTICAL EN SU SEMICICLO ANGOSTO:....... 22 (4,4uS)
+;CICLOS PARA PULSOS DE SINCRONISMO VERTICAL EN SU SEMICICLO ANCHO:......... 136 (27,2uS)
+;CICLOS PARA UNA LINEA HORIZONTAL CON SINCRONISMO INCLUIDO:................ 318 (63,6uS)
+;CICLOS PARA UNA LINEA HORIZONTAL CON PORTICOS Y SIN SINCRONISMOS:......... 295 (59uS)
+;CICLOS PARA MEDIA LINEA HORIZONTAL CON SINCRONISMO INCLUIDO:.............. 159 (31,8uS)
+;CICLOS PARA MEDIA LINEA HORIZONTAL CON PORTICOS Y SIN SINCRONISMOS:....... 134 (26,8uS)
+;CICLOS PARA EL PORTICO ANTERIOR:.......................................... 7 (1,4uS)
+;CICLOS PARA SINCRONISMO HORIZONTAL:....................................... 23-24 (4,6uS-4,8uS)
+;CICLOS PARA EL PORTICO POSTERIOR:......................................... 23-24 (4,6uS-4,8uS)
+;CICLOS PARA LA LINEA DE IMAGEN HORIZONTAL:................................ 263-264 (52,6uS-52,8uS)
+;CICLOS PARA LA LINEA DE IMAGEN HORIZONTAL CON PORTICO ANTERIOR:........... 270 (54uS)
+;CICLOS PARA MEDIA LINEA DE IMAGEN HORIZONTAL CON PORTICO ANTERIOR:........ 112 (22,4uS)
+;CICLOS PARA EL ANCHO DE LA BARRA DE COLORES:.............................. 34-46 (6,8uS-9,2uS)
+
+;TODOS LOS TIEMPOS ANTERIORMENTE CALCULADOS SON VARIABLESR PARA QUE SE CUMPLA EL TIEMPO TEORICO DE
+;BARRIDO VERTICAL DEFINIDO POR LA NORMA NTSC-M, CUYO VALOR ES: 1/59,94Hz = 16,6833mS
+
+;SIMULANDO EL PROGRAMA CON LA APLICACION MPLAB IDE(c) v6.40 SE OBTUVIERON LOS SIGUIENTES TIEMPOS:
+
+;SUBRUTINA DE BARRAS
+;BARRIDO VERTICAL DEL CAMPO 1: 16,6894e-3 - 6,40000e-6 = 16,6830e-3 - 16,6833e-3 = -0,3uS
+;BARRIDO VERTICAL DEL CAMPO 2: 33,3726e-3 - 16,6896e-3 = 16,6830e-3 - 16,6833e-3 = -0,3uS
+
+;SUBRUTINA DE BARRIDO
+;BARRIDO VERTICAL DEL CAMPO 1: 16,6536e-3 - 6,60000e-6 = 16,6464e-3 - 16,6833e-3 = -36,9uS
+;BARRIDO VERTICAL DEL CAMPO 2: 33,3004e-3 - 16,6538e-3 = 16,6466e-3 - 16,6833e-3 = -36,7uS
+
+;SUBRUTINA DE CUADRICULAS
+;BARRIDO VERTICAL DEL CAMPO 1: 16,6788e-3 - 5,40000e-6 = 16,6734e-3 - 16,6833e-3 = -9,9uS
+
+;SUBRUTINA DE PUNTOS
+;BARRIDO VERTICAL DEL CAMPO 1: 16,6728e-3 - 5,40000e-6 = 16,6674e-3 - 16,6833e-3 = -15,9uS
+
+;INTERPRETANDO LOS RESULTADOS, EL SIGNO NEGATIVO REPRESENTA LA FALTA DE TIEMPO PARA LLEGAR A LOS 
+;16,6833mS, SIENDO EL MAS PRECISO EL PATRON DE BARRAS. CON ESTOS RESULTADOS SE OBSERVARAN EN LOS
+;PATRONES CIERTAS DEFICIENCIAS EN LA SIMETRIA Y FORMA DE LAS IMAGENES, LO CUAL ES INEVITABLE DEBIDO
+;A LO IMPRECISO DEL OSCILADOR DEL PIC PARA REPRESENTAR CICLOS CON TIEMPOS IMPARES. PARA OBTENER 
+;TIEMPOS MUY PRECISOS (PRACTICAMENTE EXACTOS) SE RECOMIENDA USAR UN PIC QUE SOPORTE UN OSCILADOR DE
+;40MHz O MAYOR, Y QUE CONTENGA MEMORIA SUFICIENTE PARA ALMACENAR UN PROGRAMA APROXIMADAMENTE EL 
+;DOBLE DEL TAMAÑO DEL PRESENTE.
+
+;LOS DEFECTOS DE LOS PATRONES OBSERVADOS EN ESTA VERSION DEL PROGRAMA (PROYECTADOS EN UN TELEVISOR
+;MARCA DAEWOO(c) DE 29'' MODELO DTQ-29G4FG) SON LOS SIGUIENTES:
+
+;PATRON DE BARRAS:
+;1.- TRANSICIONES ENTRE BARRAS MUY ANCHAS (INEVITABLE, SE PUEDEN REDUCIR CON UN PIC MAS VELOZ)
+;2.- LA IMAGEN ES TEMBLOROSA SI SE ENCIENDE EL GENERADOR EN MODALIDAD DE BARRAS, EL TEMBLOR 
+;    DESAPARECE CUANDO SE SELECCIONA VARIAS VECES OTRO PATRON (PROBLEMAS DE FIRMWARE)
+
+;PATRON DE RASTREO:
+;1.- LA PUREZA DE LOS COLORES SECUNDARIOS CAMBIA EN LAS ESQUINAS (POSIBLE EFECTO OPTICO)
+
+;PATRON DE CUADRICULA:
+;1.- PRESENCIA DE SONIDO DE ALTA FRECUENCIA, LA INTENSIDAD DISMINUYE AL APAGAR LOS COLORES
+;    (PROBLEMAS DE HARDWARE)
+;2.- LAS LINEAS EN COLOR NO SON NITIDAS (PROBLEMAS DE HARDWARE DEL GENERADOR)
+;3.- LINEAS HORIZONTALES EN LA PRIMERA Y ULTIMA LINEA DE LA PANTALLA TORCIDAS (PROBLEMAS DE 
+;    FIRMWARE)
+
+;PATRON DE PUNTOS:
+;1.- NO SE NOTA EL CAMBIO DE COLOR EN LOS PUNTOS CUANDO SE APAGAN COLORES (INEVITABLE)
+;2.- LOS PUNTOS SE REDUCEN DE TAMAÑO CUANDO SE APAGAN LOS COLORES VERDE Y/O ROJO (INEVITABLE)
+;3.- LA IMAGEN ES TEMBLOROSA CUANDO SE APAGA CUALQUIER COLOR (INEVITABLE)
+;4.- ARREGLOS HORIZONTALES DE PUNTOS EN LA PRIMERA Y ULTIMA LINEA DE LA PANTALLA TORCIDOS 
+;    (PROBLEMAS DE FIRMWARE)
+
+
+	include "P16F84A.INC"
+#define RA0 0
+#define RA1 1
+#define RA2 2
+#define RA3 3
+#define RA4 4
+#define RA5 5
+#define RB0 0
+#define RB1 1
+#define RB2 2
+#define RB3 3
+#define RB4 4
+#define RB5 5
+#define RB6 6
+#define RB7 7
+
+DURHOR EQU 0x10
+TEMP EQU 0x12
+BLKLIN EQU 0x13
+CANTPRE EQU 0x14
+DUREQU EQU 0x15
+CANTVER EQU 0x16
+DURVER EQU 0x17
+CANTPOS EQU 0x18
+TIEMPO EQU 0x19
+FIELD EQU 0x1A
+CARRY EQU 0x1B
+BLANCO EQU 0x1C
+AMARILLO EQU 0x1D
+CYAN EQU 0x1E
+VERDE EQU 0x1F
+MAGENTA EQU 0x20
+ROJO EQU 0x21
+AZUL EQU 0x22
+NEGRO EQU 0x23
+CANT_LIN EQU 0x24
+PUNTOS EQU 0x25
+LIN_PUNTOS EQU 0x26
+
+	ORG 0
+	GOTO inic
+
+;**************************************************************************************************
+;*                                      INICIO DEL PROGRAMA                                       *
+;**************************************************************************************************
+	
+inic            CLRF PORTA      ;INICIALIZA LOS PUERTOS A Y B
+                CLRF PORTB 				
+                BCF STATUS,RP1
+                BSF STATUS,RP0  ;SELECCIONA EL BANCO DE REGISTROS 1
+                MOVLW 255
+                MOVWF TRISA     ;TODOS LOS BITS DEL PUERTO A COMO ENTRADA
+                CLRF TRISB      ;TODOS LOS BITS DEL PUERTO B COMO SALIDA
+                BCF STATUS,RP0  ;SELECCIONA EL BANCO DE REGISTROS O
+                MOVLW 170
+                MOVWF FIELD     ;CONTROL DEL CAMPO
+lectura         BTFSS PORTA,RA3
+                GOTO lect1      ;LECTURA DE SELECCION DE PATRONES EN EL PUERTO A
+                BTFSC PORTA,RA2 ;PATRON        RA3          RA2
+                GOTO pinicio    ;BARRAS         0            0
+                GOTO cinicio    ;BARRIDO        0            1
+lect1           BTFSC PORTA,RA2 ;CUADRICULA     1            0
+                GOTO rinicio    ;PUNTOS         1            1
+
+;**************************************************************************************************	
+;*                                 SUBRUTINA DE BARRAS DE COLOR                                   *
+;**************************************************************************************************
+
+inicio          MOVLW 0
+                MOVWF CARRY     ;VARIABLE DE CONTROL DEL ESTADO DEL CARRY
+                RRF CARRY 				
+                RRF FIELD       ;CARRY PASA AL BIT 7 DE FIELD, BIT 0 AL CARRY
+                MOVLW 10        ;LINEAS SIN VIDEO LUEGO DE LA POST-ECUALIZACION
+                BTFSS FIELD,0   ;SI ES EL CAMPO 1 SE HACEN SOLO 10 LINEAS
+                MOVLW 11        ;11 LINEAS EN EL CAMPO 2
+                MOVWF BLKLIN
+                MOVLW 185       ;CANTIDAD DE LINEAS HORIZONTALES
+                MOVWF CANT_LIN			
+                MOVLW 6         ;CANTIDAD DE PULSOS DE PRE-ECUALIZACION
+                MOVWF CANTPRE 			
+                MOVWF CANTVER   ;CANTIDAD DE PULSOS DE SINCRONISMO VERTICAL			
+                MOVWF CANTPOS   ;CANTIDAD DE PULSOS DE POST-ECUALIZACION
+preequ          BCF PORTB,RB0   ;INICIO DE PULSO PRE-ECUALIZADOR
+                MOVLW 47        ;DURACION: 2,4µS DE SEMICICLO ANGOSTO
+                MOVWF DUREQU			
+                MOVLW 2
+                MOVWF TEMP
+preq1           DECFSZ TEMP
+                GOTO preq1
+                GOTO preq2
+preq2           BSF PORTB,RB0   ;FIN DE PULSO PRE-ECUALIZADOR
+preq3           DECFSZ DUREQU   ;SE COMPLETAN LOS 29,2µS DEL SEMICICLO ANCHO
+                GOTO preq3
+                GOTO preq4
+preq4           DECFSZ CANTPRE
+                GOTO preequ
+                GOTO vert
+vert            BCF PORTB,RB0   ;INICIO DE PULSO DE SINCRONISMO VERTICAL
+                MOVLW 44        ;DURACION: 27,2µS SEMICICLO ANCHO
+                MOVWF DURVER
+                GOTO ver2
+ver2            DECFSZ DURVER
+                GOTO ver2
+                BSF PORTB,RB0   ;FIN DE PULSO DE SINCRONISMO VERTICAL
+                MOVLW 5         ;DURACION: 4,4µS SEMICICLO ANGOSTO
+                MOVWF TIEMPO
+ver3            DECFSZ TIEMPO
+                GOTO ver3
+                GOTO ver4
+ver4            DECFSZ CANTVER
+                GOTO vert
+                NOP
+poseq           BCF PORTB,RB0   ;INICIO DE PULSO POST-ECUALIZADOR
+                MOVLW 47        ;DURACION: 2,4µS SEMICICLO ANGOSTO
+                MOVWF DUREQU
+                MOVLW 2
+                MOVWF TEMP
+posq1           DECFSZ TEMP
+                GOTO posq1
+                GOTO posq2
+posq2           BSF PORTB,RB0   ;FIN DE PULSO POST-ECUALIZADOR
+                NOP
+posq3           DECFSZ DUREQU   ;SE COMPLETAN LOS 29,2µS DEL SEMICICLO ANCHO
+                GOTO posq3
+                GOTO posq4
+posq4           DECFSZ CANTPOS
+                GOTO posequ
+                GOTO posq5
+			
+;*********** BARRIDO LAS LINEAS HORIZONTALES, LA PRIMERA LINEA ES COMPLETA EN EL CAMPO 1, EN 
+;TANTO QUE ES SOLO MEDIA LINEA EN EL CAMPO 2, Y NO COMIENZA CON UN PULSO DE 
+;SINCRONISMO **********************************************************************
+			
+posq5           RLF PORTB       ;SE PASA EL CARRY AL BIT 0 DEL PUERTO B (SINCRONISMO)
+                MOVLW 5					
+                MOVWF TEMP      ;CAMPO 1: 1 LINEA Y PULSO DE SINCRONISMO (CARRY=0)
+pln1            DECFSZ TEMP				
+                GOTO pln1       ;CAMPO 2: 1/2 LINEA SIN PULSO DE SINCREONISMO (CARRY=1)
+                GOTO pln2
+pln2            MOVLW 44        ;TIEMPO PARA 1/2 LINEA HORIZONTAL (159 CICLOS TOTAL)
+                BTFSS PORTB,RB0 ;SI HAY SINCRONISMO HOR. (CAMPO 1) SE AGREGA MAS TIEMPO
+                ADDLW 53        ;TIEMPO PARA 1 LINEA HORIZONTAL (318 CICLOS TOTAL)
+                MOVWF DURHOR
+                NOP
+                BSF PORTB,RB0
+                BCF PORTB,RB1
+                NOP
+pln3            DECFSZ DURHOR
+                GOTO pln3
+						
+;******* SE HACEN 10 U 11 LINEAS EN BLANCO PARA CUMPLIR CON LAS 525 LINEAS DE LA NORMA NTSC-M SI ES
+;EL CAMPO 1 SE HACEN SOLO 10 LINEAS, YA QUE ANTES SE HIZO 1 DE MAS ************************
+
+horiz           BCF PORTB,RB0   ;INICIO DE PULSO DE SINCRONISMO HORIZONTAL
+                MOVLW 6         ;DURACION: 4,8µS 
+                MOVWF TIEMPO 			
+bln1            DECFSZ TIEMPO 			
+                GOTO bln 1
+                GOTO bln 2
+bln2            MOVLW 96
+                MOVWF DURHOR
+                BSF PORTB,RB0   ;FIN DE PULSO DE SINCRONISMO HORIZONTAL
+bln3            DECFSZ DURHOR   ;EN ESTAS LINEAS EN BLANCO ESTAN INCLUIDOS EL TIEMPO DE LOS 
+                GOTO bln3       ;PORTICOS ANTERIORES Y POSTERIORES 
+                GOTO bln4				
+bln4            GOTO bln5
+bln5            DECFSZ BLKLIN
+                GOTO horiz
+						
+;******************************* LINEAS VISIBLES DEL PATRON DE BARRAS *****************************
+
+horiz1          BCF PORTB,RB0   ;INICIO DE PULSO DE SINCRONISMO HORIZONTAL
+                MOVLW 6
+                MOVWF TIEMPO    ;DURACION: 4,8µS 
+sinh11          DECFSZ TIEMPO 			
+                GOTO sinh11
+                GOTO sinh12
+sinh12          GOTO sinh13
+sinh13          BSF PORTB,RB0   ;FIN DE PULSO DE SINCRONISMO HORIZONTAL
+                MOVLW 3
+                MOVWF TEMP
+pop11           DECFSZ TEMP
+                GOTO pop11      ;TIEMPO PARA EL PORTICO POSTERIOR DONDE SE COLOCARA LA SEÑAL 
+                GOTO pop12      ;"BURST", DURACION DE 4,8µS
+pop12           NOP						
+                MOVLW 14				
+                MOVWF BLANCO
+                MOVWF AZUL
+                MOVLW 10
+                MOVWF AMARILLO
+                MOVWF CYAN
+                MOVWF VERDE
+                MOVWF MAGENTA
+                MOVWF ROJO
+                MOVLW 29        ;CARGA EL VALOR RGB BLANCO, SE INICIA LA LINEA VISIBLE
+                MOVWF PORTB     ;DURACION DE LA LINEA VISIBLE: 52,8µS
+white1          DECFSZ BLANCO
+                GOTO white1
+                GOTO white2
+white2          NOP
+                MOVLW 25        ;CARGA EL VALOR RGB AMARILLO
+                MOVWF PORTB
+yello1          DECFSZ AMARILLO
+                GOTO yello1
+                GOTO yello2
+yello2          NOP
+                MOVLW 21        ;CARGA EL VALOR RGB CYAN
+                MOVWF PORTB
+cyan1           DECFSZ CYAN
+                GOTO cyan1
+                GOTO cyan2
+cyan2           NOP
+                MOVLW 17        ;CARGA EL VALOR RGB VERDE
+                MOVWF PORTB
+green1          DECFSZ VERDE
+                GOTO green1
+                GOTO green2
+green2          NOP
+                MOVLW 13        ;CARGA EL VALOR RGB MAGENTA
+                MOVWF PORTB
+magen1          DECFSZ MAGENTA
+                GOTO magen1
+                GOTO magen2
+magen2          NOP
+                MOVLW 9         ;CARGA EL VALOR RGB ROJO
+                MOVWF PORTB
+red1            DECFSZ ROJO
+                GOTO red1
+                GOTO red2
+red2            NOP
+                MOVLW 5         ;CARGA EL VALOR RGB AZUL
+                MOVWF PORTB
+blue1           DECFSZ AZUL
+                GOTO blue1
+                GOTO blue2
+blue2           GOTO blue3
+blue3           MOVLW 1         ;CARGA EL VALOR RGB NEGRO PARA PORTICO ANTERIOR
+                MOVWF PORTB
+                GOTO poa11
+poa11           MOVLW 56	
+                DECFSZ CANT_LIN ;VERIFICA SI SE REALIZARON 185 LINEAS DE LAS 242,5 QUE FORMAN 
+                GOTO horiz1     ;EL CAMPO EN LA NORMA NTSC-M 
+                MOVWF CANT_LIN
+	        					
+;************************** BARRA NEGRA HORIZONTAL A PARTIR DE LA LINEA 186 ***********************
+
+horiz2          BCF PORTB,RB0   ;INICIO DE PULSO DE SINCRONISMO HORIZONTAL
+                MOVLW 6
+                MOVWF TIEMPO    ;DURACION: 4,6µS ABAJO
+sinh21          DECFSZ TIEMPO 			
+                GOTO sinh21
+                GOTO sinh22
+sinh22          NOP
+                BSF PORTB,RB0   ;FIN DE PULSO DE SINCRONISMO HORIZONTAL
+                MOVLW 5					
+                MOVWF TEMP      ;TIEMPO PARA EL PORTICO POSTERIOR DONDE SE COLOCARA LA SEÑAL 
+pop21           DECFSZ TEMP     ;"BURST", DURACION DE 4,8uS
+                GOTO pop21				
+                GOTO pop22				
+pop22           GOTO pop23				
+pop23           MOVLW 87				
+                MOVWF NEGRO
+                MOVLW 1         ;CARGA EL VALOR RGB NEGRO, SE INICIA LA LINEA VISIBLE
+                MOVWF PORTB     ;DURACION DE LA LINEA VISIBLE INCLUYENDO EL TIEMPO PARA EL
+black11         DECFSZ NEGRO    ;PORTICO ANTERIOR: 54uS
+                GOTO black11
+                GOTO black12
+black12         GOTO black13			
+black13         GOTO black14
+black14         DECFSZ CANT_LIN ;VERIFICA SI SE REALIZARON 241 (185 + 56) LINEAS DE LAS 242,5
+                GOTO horiz2     ;QUE FORMAN EL CAMPO EN LA NORMA NTSC-M  
+                NOP
+
+;************************************** ULTIMA LINEA (242) ****************************************
+
+final           BCF PORTB,0     ;INICIO DE PULSO DE SINCRONISMO HORIZONTAL
+                MOVLW 0         ;DURACION: 4,6uS 
+                BTFSC FIELD,0
+                MOVLW 1         ;SE CARGAN LOS VALORES PARA EMPEZAR EL SIGUIENTE CAMPO 
+                MOVWF CARRY				
+                MOVLW 185				
+                MOVWF CANT_LIN			
+                MOVLW 6
+                MOVWF CANTPRE
+                MOVWF CANTVER
+                MOVWF CANTPOS
+                MOVLW 3
+                MOVWF TIEMPO
+sinh31          DECFSZ TIEMPO
+                GOTO sinh31
+                GOTO sinh32
+sinh32          BSF PORTB,RB0   ;FIN DE PULSO DE SINCRONISMO HORIZONTAL
+                MOVLW 5
+                MOVWF TEMP
+pop31           DECFSZ TEMP
+                GOTO pop31      ;TIEMPO PARA EL PORTICO POSTERIOR DONDE SE COLOCARA LA SEÑAL
+                GOTO pop32      ;"BURST" DURACION DE 4,8µS
+pop32           GOTO pop33				
+pop33           MOVLW 85				
+                MOVWF NEGRO
+                MOVLW 1         ;CARGA EL VALOR RGB NEGRO, SE INICIA LA LINEA VISIBLE
+                MOVWF PORTB     ;DURACION DE LA LINEA VISIBLE: 52,8µS
+black21         DECFSZ NEGRO
+                GOTO black21
+                BTFSC FIELD,0   ;SI EL CAMPO ES EL 1 REALIZA 1/2 LINEA MAS
+                GOTO f_campo    ;SE VA A REALIZAR LA 1/2 LINEA			
+                RRF CARRY				
+                RRF FIELD				
+                MOVLW 10
+                BTFSS FIELD,0
+                MOVLW 11
+                MOVWF BLKLIN
+                BTFSC PORTA,RA2
+                GOTO lectura
+                BTFSC PORTA,RA3 
+                GOTO lectura
+                GOTO preequ
+
+;*********************************** ULTIMA 1/2 LINEA DEL CAMPO 1 *********************************
+
+f_campo         GOTO pan1       ;SE COMPLETA EL TIEMPO DE PORTICO ANTERIOR DE LA LINEA 242
+pan1            GOTO pan2
+pan2            GOTO pan3
+pan3            GOTO pan4
+pan4            GOTO pan5
+pan5            GOTO pan6			
+pan6            BCF PORTB,RB0   ;INICIO DE PULSO DE SINCRONISMO HORIZONTAL
+                MOVLW 6         ;DURACION: 4,6µS
+                MOVWF TIEMPO 			
+sinh41          DECFSZ TIEMPO 			
+                GOTO sinh41
+                GOTO sinh42
+sinh42          NOP
+                BSF PORTB,RB0   ;FIN DE PULSO DE SINCRONISMO HORIZONTAL
+                MOVLW 5
+                MOVWF TEMP
+pop41           DECFSZ TEMP
+                GOTO pop41      ;TIEMPO PARA EL PORTICO POSTERIOR DONDE SE COLOCARA LA SEÑAL
+                GOTO pop42      ;"BURST"
+pop42           GOTO pop43				
+pop43           MOVLW 33        ;DURACION DE 4,8µS
+                MOVWF NEGRO
+                MOVLW 1         ;CARGA EL VALOR RGB NEGRO, SE INICIA LA LINEA VISIBLE
+                MOVWF PORTB     ;DURACION DE LA LINEA VISIBLE: 22,4µS
+black31         DECFSZ NEGRO
+                GOTO black31
+                NOP
+black32         RRF CARRY       ;SE CARGAN LOS VALORES PARA EMPEZAR EL SIGUIENTE CAMPO
+                RRF FIELD				
+                MOVLW 10
+                BTFSS FIELD,0
+                MOVLW 11
+                MOVWF BLKLIN
+                BTFSC PORTA,RA2
+                GOTO lectura
+                BTFSC PORTA,RA3 
+                GOTO lectura
+                GOTO preequ
+
+;**************************************************************************************************
+;*                                      SUBRUTINA DE BARRIDO                                      *
+;**************************************************************************************************
+
+rinicio         MOVLW 0
+                MOVWF CARRY     ;REINICIALIZACION DEL REGISTRO CARRY
+                RRF CARRY 				
+                RRF FIELD       ;CARRY PASA AL BIT 7 DE FIELD, BIT 0 AL REGISTRO CARRY
+                MOVLW 10        ;LINEAS SIN VIDEO LUEGO DE LA POST-ECUALIZACION
+                BTFSS FIELD,0   ;SI ES EL CAMPO 1 SE HACEN SOLO 10 LINEAS
+                MOVLW 11        ;11 LINEAS EN EL CAMPO 2
+                MOVWF BLKLIN
+                MOVLW 241       ;CANTIDAD DE LINEAS HORIZONTALES EN UN BLOQUE
+                MOVWF CANT_LIN			
+                MOVLW 6         ;CANTIDAD DE PULSOS DE PRE-ECUALIZACION
+                MOVWF CANTPRE 			
+                MOVWF CANTVER   ;CANTIDAD DE PULSOS DE SINCRONISMO VERTICAL			
+                MOVWF CANTPOS   ;CANTIDAD DE PULSOS DE POST-ECUALIZACION
+rpreequ         BCF PORTB,RB0   ;INICIO DE PULSO PRE-ECUALIZADOR
+                MOVLW 47        ;DURACION: 2,4µS DE SEMICICLO ANGOSTO
+                MOVWF DUREQU			
+                MOVLW 2
+                MOVWF TEMP
+rprq1           DECFSZ TEMP
+                GOTO rprq1
+                GOTO rprq2
+rprq2           BSF PORTB,RB0   ;FIN DE PULSO PRE-ECUALIZADOR
+rprq3           DECFSZ DUREQU   ;SE COMPLETAN LOS 29,2µS DEL SEMICICLO ANCHO
+                GOTO rprq3
+                GOTO rprq4
+rprq4           DECFSZ CANTPRE
+                GOTO rpreequ
+                GOTO rvert
+rvert           BCF PORTB,RB0   ;INICIO DE PULSO DE SINCRONISMO VERTICAL
+                MOVLW 44        ;DURACION: 27,2µS DE SEMICICLO ANCHO
+                MOVWF DURVER
+rvrt1           DECFSZ DURVER
+                GOTO rvrt1
+                GOTO rvrt4
+rvrt4           BSF PORTB,RB0   ;FIN DE PULSO DE SINCRONISMO VERTICAL
+                MOVLW 5         ;DURACION: 4,4µS SEMICICLO ANGOSTO
+                MOVWF TIEMPO
+rvrt2           DECFSZ TIEMPO
+                GOTO rvrt2
+                GOTO rvrt3
+rvrt3           DECFSZ CANTVER
+                GOTO rvert
+                NOP
+rposequ         BCF PORTB,RB0   ;INICIO DE PULSO POST-ECUALIZADOR
+                MOVLW 47        ;DURACION: 2,4µS SEMICICLO ANGOSTO
+                MOVWF DUREQU
+                MOVLW 2
+                MOVWF TEMP
+rpos1           DECFSZ TEMP
+                GOTO rpos1
+                GOTO rpos2
+rpos2           BSF PORTB,RB0   ;FIN DE PULSO POST-ECUALIZADOR
+rpos3           DECFSZ DUREQU   ;SE COMPLETAN LOS 29,2µS DEL SEMICICLO ANCHO
+                GOTO rpos3
+                GOTO rpos4
+rpos4           DECFSZ CANTPOS
+                GOTO rposequ
+                GOTO rpos5
+			
+;*************************** SE EMPIEZAN A BARRER LAS LINEAS HORIZONTALES *************************
+
+rpos5           RLF PORTB		
+                MOVLW 5         ;SE PASA EL CARRY AL BIT 0 DEL PUERTO B (SINCRONISMO)
+                MOVWF TEMP      ;CAMPO 1: 1 LINEA Y PULSO DE SINCRONISMO (CARRY=0)
+rpln1           DECFSZ TEMP				
+                GOTO rpln1      ;CAMPO 2: 1/2 LINEA SIN PULSO DE SINCRONISMO (CARRY=1)
+                GOTO rpln2
+rpln2           MOVLW 44        ;TIEMPO PARA 1/2 LINEA HORIZONTAL (159 CICLOS TOTAL)
+                BTFSS PORTB,RB0 ;SI HAY SINCRONISMO H (CAMPO 1) SE AGREGA MAS TIEMPO
+                ADDLW 53        ;TIEMPO PARA 1 LINEA HORIZONTAL (318 CICLOS TOTAL)
+                MOVWF DURHOR
+                NOP
+                BSF PORTB,RB0
+                BCF PORTB,RB1
+                NOP
+rpln3           DECFSZ DURHOR
+                GOTO rpln3
+						
+;*************************************** LINEAS EN BLANCO *****************************************
+
+rhoriz          BCF PORTB,RB0   ;INICIO DE PULSO DE SINCRONISMO HORIZONTAL
+                MOVLW 6         ;DURACION: 4,8µS ABAJO
+                MOVWF TIEMPO 			
+rblk1           DECFSZ TIEMPO 			
+                GOTO rblk1
+                GOTO rblk2
+rblk2           MOVLW 96
+                MOVWF DURHOR
+                BSF PORTB,RB0   ;FIN DE PULSO DE SINCRONISMO HORIZONTAL EN ESTAS LINEAS EN 
+rblk3           DECFSZ DURHOR   ;BLANCO ESTAN INCLUIDOS EL TIEMPO DE LOS PORTICOS ANTERIORES Y 
+                GOTO rblk3      ;POSTERIORES
+                GOTO rblk4				
+rblk4           GOTO rblk5
+rblk5           DECFSZ BLKLIN
+                GOTO rhoriz
+						
+;********************************* INICIO DE LA IMAGEN DE BARRIDO **********************************
+		
+rhoriz1         BCF PORTB,RB0   ;INICIO DE PULSO DE SINCRONISMO HORIZONTAL
+                MOVLW 6
+                MOVWF TIEMPO    ;DURACION: 4,8µS
+rsinv11         DECFSZ TIEMPO 			
+                GOTO rsinv11
+                GOTO rsinv12
+rsinv12         NOP
+                BSF PORTB,RB0   ;FIN DE PULSO DE SINCRONISMO HORIZONTAL
+                MOVLW 5
+                MOVWF TEMP
+rpop11          DECFSZ TEMP
+                GOTO rpop11     ;TIEMPO PARA EL PORTICO POSTERIOR DONDE SE COLOCARA LA SEÑAL 
+                GOTO rpop12     ;"BURST"
+rpop12          GOTO rpop13				
+rpop13          MOVLW 87        ;DURACION DE 4,8µS
+                MOVWF BLANCO
+                MOVLW 29        ;CARGA EL VALOR RGB BLANCO, SE INICIA LA LINEA VISIBLE
+                MOVWF PORTB     ;DURACION DE LA LINEA VISIBLE: 52,8µS
+rwhite11        DECFSZ BLANCO
+                GOTO rwhite11
+                NOP
+rwhite12        MOVLW 1         ;CARGA EL VALOR RGB NEGRO PARA PORTICO ANTERIOR
+                MOVWF PORTB
+                NOP
+                GOTO rpoa11
+rpoa11          DECFSZ CANT_LIN ;VERIFICA SI SE REALIZARON 241 LINEAS DE LAS 242,5 QUE FORMAN
+                GOTO rhoriz1    ;EL CAMPO EN LA NORMA NTSC-M
+                NOP
+			
+;*************************************** ULTIMA LINEA (242) ***************************************
+
+rfinal          BCF PORTB,0     ;INICIO DE PULSO DE SINCRONISMO HORIZONTAL
+                MOVLW 0         ;DURACION: 4,6µS 
+                BTFSC FIELD,0
+                MOVLW 1         ;SE CARGAN LOS VALORES PARA EMPEZAR EL SIGUIENTE CAMPO
+                MOVWF CARRY				
+                MOVLW 241				 
+                MOVWF CANT_LIN			
+                MOVLW 6
+                MOVWF CANTPRE
+                MOVWF CANTVER
+                MOVWF CANTPOS
+                MOVLW 3
+                MOVWF TIEMPO
+rsinv21         DECFSZ TIEMPO
+                GOTO rsinv21
+                GOTO rsinv22
+rsinv22         BSF PORTB,0     ;FIN DE PULSO DE SINCRONISMO HORIZONTAL
+                MOVLW 5
+                MOVWF TEMP
+rpop21          DECFSZ TEMP
+                GOTO rpop21     ;TIEMPO PARA EL PORTICO POSTERIOR DONDE SE COLOCARA LA SEÑAL
+                GOTO rpop22     ;"BURST"
+rpop22          GOTO rpop23				
+rpop23          MOVLW 87        ;DURACION DE 4,8µS
+                MOVWF BLANCO
+                MOVLW 29        ;CARGA EL VALOR RGB BLANCO, SE INICIA LA LINEA VISIBLE
+                MOVWF PORTB     ;DURACION DE LA LINEA VISIBLE: 52,6µS
+rwhite21        DECFSZ BLANCO
+                GOTO rwhite21
+                NOP
+                MOVLW 1         ;CARGA EL VALOR RGB NEGRO
+                MOVWF PORTB
+                BTFSC FIELD,0   ;SI EL CAMPO ES EL 1 REALIZA 1/2 LINEA MAS
+                GOTO rf_campo   ;SE VA A REALIZAR LA 1/2 LINEA DEL CAMPO 1			
+                RRF CARRY				
+                RRF FIELD				
+                MOVLW 10
+                BTFSS FIELD,0
+                MOVLW 11
+                MOVWF BLKLIN
+                BTFSS PORTA,RA2
+                GOTO lectura
+                BTFSC PORTA,RA3
+                GOTO lectura
+                GOTO rpreequ
+			
+;*********************************** ULTIMA MEDIA LINEA DEL CAMPO 1 *******************************
+
+rf_campo        NOP             ;SE COMPLETA EL TIEMPO DE PORTICO ANTERIOR
+                NOP             ;DEL CAMPO 242
+                NOP
+rm_30           BCF PORTB,RB0   ;INICIO DE PULSO DE SINCRONISMO HORIZONTAL
+                MOVLW 6         ;DURACION: 4,6µS 
+                MOVWF TIEMPO 			
+rsinv31         DECFSZ TIEMPO 			
+                GOTO rsinv31
+                GOTO rsinv32
+rsinv32         NOP
+                BSF PORTB,RB0   ;FIN DE PULSO DE SINCRONISMO HORIZONTAL			
+                MOVLW 5
+                MOVWF TEMP
+rpop31          DECFSZ TEMP
+                GOTO rpop31     ;TIEMPO PARA EL PORTICO POSTERIOR DONDE SE COLOCARA LA SEÑAL
+                GOTO rpop32     ;"BURST"
+rpop32          GOTO rpop33				
+rpop33          MOVLW 36        ;DURACION DE 4,8µS
+                MOVWF BLANCO
+                MOVLW 29				
+                MOVWF PORTB     ;CARGA EL VALOR RGB BLANCO, INICIO DE LA LINEA VISIBLE
+rwhite31        DECFSZ BLANCO   ;DURACION DE LA LINEA VISIBLE: 22,6µS
+                GOTO rwhite31
+                NOP
+                MOVLW 1         ;CARGA EL VALOR RGB NEGRO PARA PORTICO ANTERIOR
+                MOVWF PORTB			
+                RRF CARRY				
+                RRF FIELD				
+                MOVLW 10
+                BTFSS FIELD,0			
+                MOVLW 11
+                MOVWF BLKLIN
+                BTFSS PORTA,RA2
+                GOTO lectura
+                BTFSC PORTA,RA3
+                GOTO lectura
+                GOTO rpreequ
+			
+;**************************************************************************************************
+;*                                    SUBRUTINA DE CUADRICULAS                                    *
+;**************************************************************************************************
+
+cinicio         MOVLW 10        ;10 LINEAS EN BLANCO DEL CAMPO NO ENTRELAZADO
+                MOVWF BLKLIN
+                MOVLW 242       ;CANTIDAD DE LINEAS HORIZONTALES EN UN BLOQUE
+                MOVWF CANT_LIN			
+                MOVLW 6         ;CANTIDAD DE PULSOS DE PRE-ECUALIZACION
+                MOVWF CANTPRE
+                MOVWF CANTVER   ;CANTIDAD DE PULSOS DE SINCRONISMO VERTICAL			
+                MOVWF CANTPOS   ;CANTIDAD DE PULSOS DE POST-ECUALIZACION
+cpreequ         BCF PORTB,RB0   ;INICIO DE PULSO PRE-ECUALIZADOR
+                MOVLW 47        ;DURACION: 2,4µS DE SEMICICLO ANGOSTO
+                MOVWF DUREQU			
+                MOVLW 2
+                MOVWF TEMP
+cpreq1          DECFSZ TEMP
+                GOTO cpreq1
+                GOTO cpreq2
+cpreq2          NOP
+                BSF PORTB,RB0   ;FIN DE PULSO PRE-ECUALIZADOR
+                NOP
+cpreq3          DECFSZ DUREQU   ;SE COMPLETAN LOS 29,2µS DEL SEMICICLO ANCHO
+                GOTO cpreq3
+                GOTO cpreq4
+cpreq4          DECFSZ CANTPRE
+                GOTO cpreequ
+                NOP
+cvert           BCF PORTB,RB0   ;INICIO DE PULSO DE SINCRONISMO VERTICAL
+                MOVLW 45        ;DURACION: 27,2µS DE SEMICICLO ANCHO
+                MOVWF DURVER
+cver2           DECFSZ DURVER
+                GOTO cver2
+                BSF PORTB,RB0   ;FIN DE PULSO DE SINCRONISMO VERTICAL
+                MOVLW 5         ;DURACION: 4,4µS DE SEMICICLO ANGOSTO
+                MOVWF TIEMPO
+cver3           DECFSZ TIEMPO
+                GOTO cver3
+                GOTO cver4
+cver4           NOP
+                DECFSZ CANTVER
+                GOTO cvert
+                NOP
+cposequ         BCF PORTB,RB0   ;INICIO DE PULSO POST-ECUALIZADOR
+                MOVLW 47        ;DURACION: 2,4µS DE SEMICICLO ANGOSTO
+                MOVWF DUREQU
+                MOVLW 2
+                MOVWF TEMP
+cposq1          DECFSZ TEMP
+                GOTO cposq1
+                GOTO cposq2
+cposq2          NOP
+                BSF PORTB,RB0   ;FIN DE PULSO POST-ECUALIZADOR
+                NOP
+cposq3          DECFSZ DUREQU   ;SE COMPLETAN LOS 29,2µS DEL SEMICICLO ANCHO
+                GOTO cposq3
+                GOTO cposq4
+cposq4          DECFSZ CANTPOS
+                GOTO cposequ
+                GOTO cpln1
+			
+;************************* SE EMPIEZA CON 1/2 LINEA SIN PULSO DE SINCRONISMO **********************
+			
+cpln1           MOVLW 10
+                MOVWF PUNTOS
+                GOTO cpln4
+cpln4           MOVLW 51        ;TIEMPO PARA 1/2 LINEA HORIZONTAL (159 CICLOS EN TOTAL)
+                MOVWF DURHOR
+cpln3           DECFSZ DURHOR
+                GOTO cpln3
+                NOP
+
+;*************************************** LINEAS EN BLANCO *****************************************
+
+choriz          BCF PORTB,RB0   ;INICIO DE PULSO DE SINCRONISMO HORIZONTAL
+                MOVLW 6         ;DURACION: 4,8µS 
+                MOVWF TIEMPO 			
+cbln1           DECFSZ TIEMPO 			
+                GOTO cbln1
+                NOP
+cbln2           MOVLW 96
+                MOVWF DURHOR
+                BSF PORTB,RB0   ;FIN DE PULSO DE SINCRONISMO HORIZONTAL, EN ESTAS LINEAS EN
+cbln3           DECFSZ DURHOR   ;BLANCO ESTAN INCLUIDOS EL TIEMPO DE LOS PORTICOS ANTERIORES
+                GOTO cbln3      ;Y POSTERIORES
+                GOTO cbln4				
+cbln4           GOTO cbln5
+cbln5           DECFSZ BLKLIN
+                GOTO choriz
+                NOP
+						
+;*********************** LINEAS Y PUNTOS HORIZONTALES QUE FORMAN LA CAUDRICULA ********************
+
+choriz1         BCF PORTB,RB0   ;INICIO DE PULSO DE SINCRONISMO HORIZONTAL
+                MOVLW 6
+                MOVWF TIEMPO    ;DURACION: 4,8µS
+csinh11         DECFSZ TIEMPO 			
+                GOTO csinh11
+                MOVLW 22
+                MOVWF LIN_PUNTOS
+                GOTO csinh13
+csinh13         BSF PORTB,RB0   ;FIN DE PULSO DE SINCRONISMO HORIZONTAL
+                MOVLW 5
+                MOVWF TEMP
+cpop11          DECFSZ TEMP
+                GOTO cpop11     ;TIEMPO PARA EL PORTICO POSTERIOR DONDE SE COLOCARA LA SEÑAL
+                GOTO cpop12     ;"BURST", DURACION DE 4,8µS
+cpop12          GOTO cpop13				 
+cpop13          NOP				
+clinp1          MOVLW 28
+                ADDWF PORTB     ;LINEAS DE PUNTOS QUE FORMARAN LA CUADRICULA:
+                SUBWF PORTB     ;22 PUNTOS EN CADA LINEA PARA UN TOTAL DE 10 LINEAS, EL PUNTO
+                NOP             ;DURA 0,2µS (1 CICLO) SEPARADOS ENTRE SI POR 2,2µS (11 CICLOS),
+                GOTO clinp2     ;EN TOTAL 2,4µS (12 CICLOS), QUE MULTIPLICADO POR 22 RESULTA 
+clinp2          GOTO clinp3     ;52,8µS
+clinp3          NOP						
+                DECFSZ LIN_PUNTOS		
+                GOTO clinp1
+                GOTO clinp4
+clinp4          NOP
+                DECF CANT_LIN   ;TIEMPO DE PORTICO ANTERIOR DE 1,4µS
+                GOTO cpan11
+cpan11          DECFSZ PUNTOS   ;CHEQUEA SI SE REALIZARON LAS 10 LINEAS DE PUNTOS
+                GOTO choriz1
+                NOP
+                BCF PORTB,RB0   ;INICIO DE PULSO DE SINCRONISMO HORIZONTAL
+                MOVLW 6
+                MOVWF TIEMPO    ;DURACION: 4,8µS ABAJO
+csinh21         DECFSZ TIEMPO 			
+                GOTO csinh21
+                GOTO csinh22
+csinh22         GOTO csinh23
+csinh23         BSF PORTB,RB0   ;FIN DE PULSO DE SINCRONISMO HORIZONTAL
+                MOVLW 5
+                MOVWF TEMP
+cpop1           DECFSZ TEMP
+                GOTO cpop1      ;TIEMPO PARA EL PORTICO POSTERIOR DONDE SE COLOCARA LA SEÑAL
+                GOTO cpop2      ;"BURST"
+cpop2           NOP				
+                MOVLW 87        ;DURACION DE 4,6µS
+                MOVWF BLANCO
+                MOVLW 29        ;CARGA EL VALOR RGB BLANCO, SE INICIA LA LINEA VISIBLE DURACION
+                MOVWF PORTB     ;DE LA LINEA VISIBLE: 52,8µS
+cwhite11        DECFSZ BLANCO
+                GOTO cwhite11
+                GOTO cwhite12
+cwhite12        MOVLW 1         ;CARGA EL VALOR RGB NEGRO PARA PORTICO ANTERIOR
+                MOVWF PORTB
+                NOP
+                MOVLW 10
+                MOVWF PUNTOS
+                DECFSZ CANT_LIN ;VERIFICA SI SE REALIZARON 242 LINEAS DE LAS 242,5 QUE FORMAN
+                GOTO choriz1    ;EL CAMPO EN LA NORMA NTSC-M
+                NOP
+			
+;************************************ ULTIMA 1/2 LINEA DEL CAMPO **********************************
+
+                BCF PORTB,0     ;INICIO DE PULSO DE SINCRONISMO HORIZONTAL
+                GOTO csinh33    ;DURACION: 4,8µS
+csinh33         NOP
+                MOVLW 242				
+                MOVWF CANT_LIN			
+                MOVLW 6
+                MOVWF CANTPRE
+                NOP
+                MOVWF CANTVER
+                MOVWF CANTPOS
+                MOVLW 3
+                MOVWF TIEMPO
+csinh31         DECFSZ TIEMPO
+                GOTO csinh31
+                GOTO csinh32
+csinh32         NOP
+                BSF PORTB,RB0   ;FIN DE PULSO DE SINCRONISMO HORIZONTAL
+                MOVLW 5
+                MOVWF TEMP
+cpop41          DECFSZ TEMP
+                GOTO cpop41     ;TIEMPO PARA EL PORTICO POSTERIOR DONDE SE COLOCARA LA SEÑAL 
+                GOTO cpop42     ;"BURST"
+cpop42          GOTO cpop43				
+cpop43          MOVLW 44        ;DURACION DE 4,6µS
+                MOVWF BLANCO
+                MOVLW 29        ;CARGA EL VALOR RGB NEGRO, SE INICIA LA LINEA VISIBLE DURACION
+                MOVWF PORTB     ;DE LA LINEA VISIBLE: 52,8µS
+cwhite21        DECFSZ BLANCO
+                GOTO cwhite21
+                GOTO cwhite22
+cwhite22        MOVLW 1
+                MOVWF PORTB
+                MOVLW 10
+                MOVWF BLKLIN
+                BTFSC PORTA,RA2
+                GOTO lectura
+                BTFSS PORTA,RA3
+                GOTO lectura
+                GOTO cpreequ
+			
+;**************************************************************************************************
+;*                                      SUBRUTINA DE PUNTOS                                       *
+;**************************************************************************************************
+
+pinicio         MOVLW 10        ;10 LINEAS EN BLANCO DEL CAMPO NO ENTRELAZADO
+                MOVWF BLKLIN
+                MOVLW 242       ;CANTIDAD DE LINEAS HORIZONTALES EN UN BLOQUE
+                MOVWF CANT_LIN	
+                MOVLW 6         ;CANTIDAD DE PULSOS DE PRE-ECUALIZACION
+                MOVWF CANTPRE			
+                NOP 			
+                MOVWF CANTVER   ;CANTIDAD DE PULSOS DE SINCRONISMO VERTICAL			
+                MOVWF CANTPOS   ;CANTIDAD DE PULSOS DE POST-ECUALIZACION
+ppreequ         BCF PORTB,RB0   ;INICIO DE PULSO PRE-ECUALIZADOR
+                MOVLW 47        ;DURACION: 2,4µS DE SEMICICLO ANGOSTO
+                MOVWF DUREQU			
+                MOVLW 2
+                MOVWF TEMP
+ppreq1          DECFSZ TEMP
+                GOTO ppreq1
+                GOTO ppreq2
+ppreq2          BSF PORTB,RB0   ;FIN DE PULSO PRE-ECUALIZADOR
+ppreq3          DECFSZ DUREQU   ;SE COMPLETAN LOS 29,2µS DEL SEMICICLO ANCHO
+                GOTO ppreq3
+                GOTO ppreq4
+ppreq4          DECFSZ CANTPRE
+                GOTO ppreequ
+                GOTO pvert
+pvert           BCF PORTB,RB0   ;INICIO DE PULSO DE SINCRONISMO VERTICAL
+                MOVLW 45        ;DURACION: 27,2µS DE SEMICICLO ANCHO
+                MOVWF DURVER
+pver2           DECFSZ DURVER
+                GOTO pver2
+                BSF PORTB,RB0   ;FIN DE PULSO DE SINCRONISMO VERTICAL
+                MOVLW 5         ;DURACION: 4,4µS DE SEMICICLO ANGOSTO
+                MOVWF TIEMPO
+pver3           DECFSZ TIEMPO
+                GOTO pver3
+                GOTO pver4
+pver4           DECFSZ CANTVER
+                GOTO pvert
+                NOP
+pposequ         BCF PORTB,RB0   ;INICIO DE PULSO POST-ECUALIZADOR
+                MOVLW 47        ;DURACION: 2,4µS DE SEMICICLO ANGOSTO
+                MOVWF DUREQU
+                MOVLW 2
+                MOVWF TEMP
+pposq1          DECFSZ TEMP
+                GOTO pposq1
+                GOTO pposq2
+pposq2          BSF PORTB,RB0   ;FIN DE PULSO POST-ECUALIZADOR
+pposq3          DECFSZ DUREQU   ;SE COMPLETAN LOS 29,2µS DEL SEMICICLO ANCHO
+                GOTO pposq3
+                GOTO pposq4
+pposq4          DECFSZ CANTPOS
+                GOTO pposequ
+                GOTO ppln1
+			
+;*********************** SE EMPIEZA CON 1/2 LINEA SIN PULSO DE SINCRONISMO ************************
+			
+                ppln1MOVLW 10
+                MOVWF PUNTOS
+                GOTO ppln3
+ppln3           MOVLW 51        ;TIEMPO PARA 1/2 LINEA HORIZONTAL (159 CICLOS EN TOTAL)
+                MOVWF DURHOR
+ppln4           DECFSZ DURHOR
+                GOTO ppln4
+                NOP
+
+;**************************************** LINEAS EN BLANCO ****************************************
+
+phoriz          BCF PORTB,RB0   ;INICIO DE PULSO DE SINCRONISMO HORIZONTAL
+                MOVLW 6         ;DURACION: 4,6µS
+                MOVWF TIEMPO 			
+pbln1           DECFSZ TIEMPO 			
+                GOTO pbln1
+                NOP
+                MOVLW 96
+                MOVWF DURHOR
+                BSF PORTB,RB0   ;FIN DE PULSO DE SINCRONISMO HORIZONTAL EN ESTAS LINEAS EN
+pbln3           DECFSZ DURHOR   ;BLANCO ESTAN INCLUIDOS EL TIEMPO DE LOS PORTICOS ANTERIORES Y 
+                GOTO pbln3      ;POSTERIORES
+                GOTO pbln4				
+pbln4           GOTO pbln5
+pbln5           DECFSZ BLKLIN
+                GOTO phoriz
+                NOP
+						
+;************************************ LINEAS NEGRAS VISIBLES **************************************
+
+phoriz1         BCF PORTB,RB0   ;INICIO DE PULSO DE SINCRONISMO HORIZONTAL
+                MOVLW 6
+                MOVWF TIEMPO    ;DURACION: 4,8µS
+psinh21         DECFSZ TIEMPO 
+                GOTO psinh21
+                GOTO psinh22
+psinh22         GOTO psinh23
+psinh23         BSF PORTB,RB0   ;FIN DE PULSO DE SINCRONISMO HORIZONTAL
+                MOVLW 5
+                MOVWF TEMP
+ppop1           DECFSZ TEMP
+                GOTO ppop1      ;TIEMPO PARA EL PORTICO POSTERIOR DONDE SE COLOCARA LA SEÑAL 
+                GOTO ppop2      ;"BURST"
+ppop2           GOTO ppop3				
+ppop3           MOVLW 87        ;DURACION DE 4,8µS
+                MOVWF NEGRO
+                MOVLW 1         ;CARGA EL VALOR RGB BLANCO
+                MOVWF PORTB     ;SE INICIA LA LINEA VISIBLE, INCLUIDO EL PORTICO ANTERIOR	
+pblack11        DECFSZ NEGRO
+                GOTO pblack11
+                GOTO pblack12
+pblack12        NOP			
+                DECF CANT_LIN			
+                GOTO ppan11
+ppan11          DECFSZ PUNTOS   ;CHEQUEA SI SE REALIZARON 10 LINEAS NEGRAS
+                GOTO phoriz1
+                NOP
+			
+;**************************************** LINEA DE PUNTOS *****************************************
+
+                BCF PORTB,RB0   ;INICIO DE PULSO DE SINCRONISMO HORIZONTAL
+                MOVLW 6
+                MOVWF TIEMPO    ;DURACION: 4,8µS
+psinh11         DECFSZ TIEMPO 			
+                GOTO psinh11
+                MOVLW 22
+                MOVWF LIN_PUNTOS
+                GOTO psinh13
+psinh13         BSF PORTB,RB0   ;FIN DE PULSO DE SINCRONISMO HORIZONTAL
+                MOVLW 5
+                MOVWF TEMP
+ppop11          DECFSZ TEMP
+                GOTO ppop11     ;TIEMPO PARA EL PORTICO POSTERIOR DONDE SE COLOCARA LA 
+                GOTO ppop12     ;SEÑAL "BURST", DURACION DE 4,6µS 
+ppop12          GOTO ppop13				
+ppop13          NOP				
+plinp1          MOVLW 28
+                ADDWF PORTB     ;LINEAS DE PUNTOS QUE FORMARAN LA CUADRICULA:
+                SUBWF PORTB     ;22 PUNTOS EN CADA LINEA PARA UN TOTAL DE 10 LINEAS EL PUNTO
+                NOP             ;DURA 0,2µS (1 CICLO) SEPARADOS ENTRE SI POR 2,2µS (11 CICLOS),
+                GOTO plinp2     ;EN TOTAL 2,4µS (12 CICLOS), QUE MULTIPLICADO POR 22 RESULTA
+plinp2          GOTO plinp3     ;52,8µS
+plinp3          NOP						
+                DECFSZ LIN_PUNTOS		
+                GOTO plinp1
+                GOTO plinp4
+plinp4          MOVLW 10
+                MOVWF PUNTOS
+                GOTO ppan21
+ppan21          DECFSZ CANT_LIN ;VERIFICA SI SE REALIZARON 242 LINEAS DE LAS 242,5 QUE FORMAN
+                GOTO phoriz1    ;EL CAMPO EN LA NORMA NTSC-M
+                NOP
+
+;*********************************** ULTIMA 1/2 LINEA DEL CAMPO ***********************************
+
+                BCF PORTB,0     ;INICIO DE PULSO DE SINCRONISMO HORIZONTAL
+                MOVLW 242       ;DURACION: 4,6µS
+                MOVWF CANT_LIN			
+                MOVLW 6
+                MOVWF CANTPRE
+                MOVWF CANTVER
+                MOVWF CANTPOS
+                MOVLW 4
+                MOVWF TIEMPO
+psinh31         DECFSZ TIEMPO
+                GOTO psinh31
+                GOTO psinh32
+psinh32         NOP
+                BSF PORTB,RB0   ;FIN DE PULSO DE SINCRONISMO HORIZONTAL
+                MOVLW 5
+                MOVWF TEMP
+ppop41          DECFSZ TEMP
+                GOTO ppop41     ;TIEMPO PARA EL PORTICO POSTERIOR DONDE SE COLOCARA LA SEÑAL 
+                GOTO ppop42     ;"BURST"
+ppop42          GOTO ppop43				
+ppop43          MOVLW 44        ;DURACION DE 4,6µS
+                MOVWF NEGRO
+                MOVLW 1         ;CARGA EL VALOR RGB NEGRO, SE INICIA LA LINEA VISIBLE
+                MOVWF PORTB     ;DURACION DE LA LINEA VISIBLE: 52,8µS
+pblack21        DECFSZ NEGRO
+                GOTO pblack21
+                GOTO pblack22
+pblack22        GOTO pblack23
+pblack23        MOVLW 10
+                MOVWF BLKLIN
+                BTFSS PORTA,RA2
+                GOTO lectura
+                BTFSS PORTA,RA3
+                GOTO lectura
+                GOTO ppreequ
+                END;                    * * *  F I N  D E L  P R O G R A M A  * * *

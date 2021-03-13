@@ -13,3 +13,6 @@ ScrollReveal().reveal('.cont-footer', { delay: 1000 });
 ScrollReveal().reveal('.contenido', { delay: 500 });
 ScrollReveal().reveal('.divconsola', { delay: 500 });
 ScrollReveal().reveal('.img-mini-simple',{delay:500});
+ScrollReveal().reveal('.ecuaciones',{delay:500});
+ScrollReveal().reveal('.reduc50',{delay:500});
+ScrollReveal().reveal('.pfooter',{delay:500});
